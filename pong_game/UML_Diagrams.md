@@ -1,454 +1,905 @@
-# Pong Game - UML Diagrams# Pong Game - UML Diagrams
+# Pong Game - UML Diagrams# Pong Game - UML Diagrams# Pong Game - UML Diagrams
 
 
 
-## 1. Core Architecture - State Pattern## 1. Core Architecture Overview
+## 1. State Pattern - Core Game States
 
 
 
-```mermaid```mermaid
+```mermaid## 1. Core Architecture - State Pattern## 1. Core Architecture Overview
 
-classDiagramclassDiagram
+classDiagram
 
-    class GameManager {    class GameManager {
+    class GameManager {
 
-        <<Singleton>>        -GameManager _instance
+        -GameManager instance
 
-        -static GameManager _instance        -object _lock
+        -object lock```mermaid```mermaid
 
-        -static object _lock        -GameContext Context
+        -StateMachine StateMachine
 
-        -StateMachine StateMachine        -StateMachine StateMachine
+        -MenuState MenuStateclassDiagramclassDiagram
 
-        -MenuState MenuState        -IGameEntityFactory _factory
+        -PlayState PlayState
 
-        -PlayState PlayState        +Instance : GameManager
+        -GameOverState GameOverState    class GameManager {    class GameManager {
 
-        -GameOverState GameOverState        +InitializeGame()
+        +Instance GameManager
 
-        +static Instance : GameManager        +Run()
+        +InitializeGame()        <<Singleton>>        -GameManager _instance
 
-        -GameManager()    }
+        +Run()
 
-        +InitializeGame()    
-
-        +Run()    class StateMachine {
-
-    }        -IGameState _currentState
-
-            -Dictionary~string, IGameState~ _states
-
-    class StateMachine {        +AddState(name, state)
-
-        -IGameState _currentState        +ChangeState(stateName)
-
-        -Dictionary~string, IGameState~ _states        +Update(deltaTime)
-
-        +AddState(name, state)        +GetCurrentState()
-
-        +ChangeState(stateName)    }
-
-        +Update(deltaTime)    
-
-    }    class GameContext {
-
-            +Ball Ball
-
-    class IGameState {        +Paddle LeftPaddle
-
-        <<interface>>        +Paddle RightPaddle
-
-        +Enter()        +List~Wall~ Walls
-
-        +Update(deltaTime)        +ScoreSubject ScoreSubject
-
-        +Exit()        +SoundManager SoundManager
-
-    }        +PowerUpManager PowerUpManager
-
-            +ActiveEffectManager ActiveEffectManager
-
-    class MenuState {        +InputHandler InputHandler
-
-        -GameContext _context    }
-
-        +Enter()
-
-        +Update(deltaTime)    %% State Pattern
-
-        +Exit()    class IGameState {
-
-    }        <<interface>>
-
-            +Enter()
-
-    class PlayState {        +Update(deltaTime)
-
-        -GameContext _context        +Exit()
-
-        +Enter()    }
-
-        +Update(deltaTime)    
-
-        +Exit()    class MenuState {
-
-    }        -GameContext _context
-
-            +Enter()
-
-    class GameOverState {        +Update(deltaTime)
-
-        -GameContext _context        +Exit()
-
-        -string _winner    }
-
-        +Enter()    
-
-        +Update(deltaTime)    class PlayState {
-
-        +Exit()        -GameContext _context
-
-    }        +Enter()
-
-            +Update(deltaTime)
-
-    GameManager --> StateMachine        +Exit()
-
-    GameManager --> MenuState    }
-
-    GameManager --> PlayState    
-
-    GameManager --> GameOverState    class GameOverState {
-
-    StateMachine --> IGameState        -GameContext _context
-
-    IGameState <|.. MenuState        +Enter()
-
-    IGameState <|.. PlayState        +Update(deltaTime)
-
-    IGameState <|.. GameOverState        +Exit()
-
-```    }
+    }        -static GameManager _instance        -object _lock
 
     
 
-## 2. Command Pattern    GameManager --> StateMachine
+    class StateMachine {        -static object _lock        -GameContext Context
 
-    GameManager --> GameContext
+        -IGameState currentState
 
-```mermaid    StateMachine --> IGameState
+        -Dictionary states        -StateMachine StateMachine        -StateMachine StateMachine
 
-classDiagram    IGameState <|.. MenuState
+        +AddState(name, state)
 
-    class ICommand {    IGameState <|.. PlayState
+        +ChangeState(stateName)        -MenuState MenuState        -IGameEntityFactory _factory
 
-        <<interface>>    IGameState <|.. GameOverState
+        +Update(deltaTime)
 
-        +Execute()```
+    }        -PlayState PlayState        +Instance : GameManager
 
-        +Undo()
+    
 
-    }    %% Component Pattern
-
-        class IComponent {
-
-    class MoveUpCommand {        <<interface>>
-
-        -Paddle _paddle        +Update(deltaTime)
-
-        -float _previousY    }
-
-        +MoveUpCommand(paddle)    
-
-        +Execute()    class GameObject {
-
-        +Undo()        <<abstract>>
-
-    }        #List~IComponent~ _components
-
-            +AddComponent(component)
-
-    class MoveDownCommand {        +RemoveComponent(component)
-
-        -Paddle _paddle        +GetComponent~T~()
-
-        -float _previousY        +Update(deltaTime)
-
-        +MoveDownCommand(paddle)        +Draw()*
-
-        +Execute()    }
-
-        +Undo()    
-
-    }    class TransformComponent {
-
-            +float X
-
-    class StopPaddleCommand {        +float Y
-
-        -Paddle _paddle        +float Width
-
-        -float _previousSpeed        +float Height
-
-        +StopPaddleCommand(paddle)        +GetBounds() Rectangle
-
-        +Execute()        +Update(deltaTime)
-
-        +Undo()    }
-
-    }    
-
-        class MovementComponent {
-
-    class InputHandler {        -TransformComponent _transform
-
-        <<Invoker>>        +Vector2D Velocity
-
-        -Dictionary~KeyCode, ICommand~ _keyBindings        +float Speed
-
-        -List~ICommand~ _commandHistory        +SetVelocity(x, y)
-
-        +InputHandler(leftPaddle, rightPaddle)        +Update(deltaTime)
-
-        +HandleKeyInput(leftPaddle, rightPaddle)    }
-
-        +UpdatePaddleMovement(leftPaddle, rightPaddle)    
-
-        +UndoLastCommand()    class RenderComponent {
-
-    }        -TransformComponent _transform
-
-            +Color Color
-
-    class Paddle {        +bool IsCircle
-
-        <<Receiver>>        +Draw()
-
-        +float Y        +Update(deltaTime)
-
-        +float Speed    }
-
-        +MoveUp()
-
-        +MoveDown()    %% Entities
-
-        +ResetSpeed()    class Ball {
-
-    }        -TransformComponent _transform
-
-            -MovementComponent _movement
-
-    ICommand <|.. MoveUpCommand        -RenderComponent _render
-
-    ICommand <|.. MoveDownCommand        -float _baseSpeed
-
-    ICommand <|.. StopPaddleCommand        -Vector2D _velocity
-
-    InputHandler --> ICommand        +float X
-
-    MoveUpCommand --> Paddle        +float Y
-
-    MoveDownCommand --> Paddle        +int Size
-
-    StopPaddleCommand --> Paddle        +Color Color
-
-```        +float Speed
-
-        +Move()
-
-## 3. Component Pattern        +Bounce(surfaceNormal)
-
-        +ResetPosition()
-
-```mermaid        +Draw()
-
-classDiagram    }
-
-    class IComponent {    
-
-        <<interface>>    class Paddle {
-
-        +Update(deltaTime)        -TransformComponent _transform
-
-    }        -RenderComponent _render
-
-            -const float BASE_SPEED
-
-    class GameObject {        -const float MAX_SPEED
-
-        <<abstract>>        +float X
-
-        #List~IComponent~ _components        +float Y
-
-        +AddComponent(component)        +int Width
-
-        +RemoveComponent(component)        +int Height
-
-        +GetComponent~T~()        +float Speed
-
-        +Update(deltaTime)        +MoveUp()
-
-        +Draw()*        +MoveDown()
-
-    }        +ResetSpeed()
-
-            +Draw()
-
-    class TransformComponent {    }
-
-        +float X    
-
-        +float Y    class Wall {
-
-        +float Width        -TransformComponent _transform
-
-        +float Height        -MovementComponent _movement
-
-        +TransformComponent(x, y, width, height)        -RenderComponent _render
-
-        +GetBounds() Rectangle        +const int WALL_WIDTH
-
-        +Update(deltaTime)        +const int WALL_HEIGHT
-
-    }        +float X
-
-            +float Y
-
-    class MovementComponent {        +float YSpeed
-
-        -TransformComponent _transform        +Move()
-
-        +Vector2D Velocity        +Draw()
-
-        +float Speed    }
-
-        +MovementComponent(transform, speed)    
-
-        +SetVelocity(x, y)    class Scoreboard {
-
-        +Update(deltaTime)        -int _leftScore
-
-    }        -int _rightScore
-
-            -bool _gameStarted
-
-    class RenderComponent {        +int LeftScore
-
-        -TransformComponent _transform        +int RightScore
-
-        +Color Color        +LeftPoint()
-
-        +bool IsCircle        +RightPoint()
-
-        +RenderComponent(transform, color, isCircle)        +Start()
-
-        +Draw()        +Reset()
-
-        +Update(deltaTime)    }
-
-    }
-
-        %% Decorator Pattern
-
-    class Ball {    class IGameEntity {
-
-        -TransformComponent _transform        <<interface>>
-
-        -MovementComponent _movement        +GetSpeed() float
-
-        -RenderComponent _render        +GetSize() float
-
-        +Ball(windowWidth, windowHeight)        +Update(deltaTime)
-
-        +Draw()    }
-
-    }    
-
-        class EntityDecorator {
-
-    class Paddle {        <<abstract>>
-
-        -TransformComponent _transform        #IGameEntity _wrappedEntity
-
-        -RenderComponent _render        +GetSpeed() float
-
-        +Paddle(x, y, windowHeight)        +GetSize() float
-
-        +Draw()        +Update(deltaTime)
-
-    }    }
-
-        
-
-    class Wall {    class SpeedBoostDecorator {
-
-        -TransformComponent _transform        -float _speedMultiplier
-
-        -MovementComponent _movement        -DateTime _startTime
-
-        -RenderComponent _render        -double _duration
-
-        +Wall(x, y, windowHeight, speedMultiplier)        +GetSpeed() float
-
-        +Draw()        +IsActive() bool
-
-    }    }
-
-        
-
-    IComponent <|.. TransformComponent    class SpeedReductionDecorator {
-
-    IComponent <|.. MovementComponent        -float _speedMultiplier
-
-    IComponent <|.. RenderComponent        -DateTime _startTime
-
-    GameObject <|-- Ball        -double _duration
-
-    GameObject <|-- Paddle        +GetSpeed() float
-
-    GameObject <|-- Wall        +IsActive() bool
-
-    GameObject --> IComponent    }
-
-    Ball --> TransformComponent    
-
-    Ball --> MovementComponent    class SizeBoostDecorator {
-
-    Ball --> RenderComponent        -float _sizeMultiplier
-
-    Paddle --> TransformComponent        -DateTime _startTime
-
-    Paddle --> RenderComponent        -double _duration
-
-    Wall --> TransformComponent        +GetSize() float
-
-    Wall --> MovementComponent        +IsActive() bool
-
-    Wall --> RenderComponent    }
-
-```
-
-    %% Observer Pattern
-
-## 4. Observer Pattern    class ISubject {
+    class IGameState {        -GameOverState GameOverState        +InitializeGame()
 
         <<interface>>
 
-```mermaid        +Attach(observer)
+        +Enter()        +static Instance : GameManager        +Run()
 
-classDiagram        +Detach(observer)
+        +Update(deltaTime)
 
-    class ISubject {        +Notify()
+        +Exit()        -GameManager()    }
 
-        <<interface>>    }
+    }
 
-        +Attach(observer)    
+            +InitializeGame()    
 
-        +Detach(observer)    class IObserver {
+    class MenuState {
 
-        +Notify()        <<interface>>
+        -GameContext context        +Run()    class StateMachine {
 
-    }        +Update(subject)
+        +Enter()
+
+        +Update(deltaTime)    }        -IGameState _currentState
+
+        +Exit()
+
+    }            -Dictionary~string, IGameState~ _states
+
+    
+
+    class PlayState {    class StateMachine {        +AddState(name, state)
+
+        -GameContext context
+
+        +Enter()        -IGameState _currentState        +ChangeState(stateName)
+
+        +Update(deltaTime)
+
+        +Exit()        -Dictionary~string, IGameState~ _states        +Update(deltaTime)
+
+    }
+
+            +AddState(name, state)        +GetCurrentState()
+
+    class GameOverState {
+
+        -GameContext context        +ChangeState(stateName)    }
+
+        -string winner
+
+        +Enter()        +Update(deltaTime)    
+
+        +Update(deltaTime)
+
+        +Exit()    }    class GameContext {
+
+    }
+
+                +Ball Ball
+
+    GameManager --> StateMachine
+
+    GameManager --> MenuState    class IGameState {        +Paddle LeftPaddle
+
+    GameManager --> PlayState
+
+    GameManager --> GameOverState        <<interface>>        +Paddle RightPaddle
+
+    StateMachine --> IGameState
+
+    IGameState <|.. MenuState        +Enter()        +List~Wall~ Walls
+
+    IGameState <|.. PlayState
+
+    IGameState <|.. GameOverState        +Update(deltaTime)        +ScoreSubject ScoreSubject
+
+```
+
+        +Exit()        +SoundManager SoundManager
+
+## 2. Command Pattern - Paddle Controls
+
+    }        +PowerUpManager PowerUpManager
+
+```mermaid
+
+classDiagram            +ActiveEffectManager ActiveEffectManager
+
+    class ICommand {
+
+        <<interface>>    class MenuState {        +InputHandler InputHandler
+
+        +Execute()
+
+        +Undo()        -GameContext _context    }
+
+    }
+
+            +Enter()
+
+    class MoveUpCommand {
+
+        -Paddle paddle        +Update(deltaTime)    %% State Pattern
+
+        -float previousY
+
+        +Execute()        +Exit()    class IGameState {
+
+        +Undo()
+
+    }    }        <<interface>>
+
+    
+
+    class MoveDownCommand {            +Enter()
+
+        -Paddle paddle
+
+        -float previousY    class PlayState {        +Update(deltaTime)
+
+        +Execute()
+
+        +Undo()        -GameContext _context        +Exit()
+
+    }
+
+            +Enter()    }
+
+    class StopPaddleCommand {
+
+        -Paddle paddle        +Update(deltaTime)    
+
+        -float previousSpeed
+
+        +Execute()        +Exit()    class MenuState {
+
+        +Undo()
+
+    }    }        -GameContext _context
+
+    
+
+    class InputHandler {            +Enter()
+
+        -Dictionary keyBindings
+
+        -List commandHistory    class GameOverState {        +Update(deltaTime)
+
+        +HandleKeyInput(leftPaddle, rightPaddle)
+
+        +UpdatePaddleMovement(leftPaddle, rightPaddle)        -GameContext _context        +Exit()
+
+        +UndoLastCommand()
+
+    }        -string _winner    }
+
+    
+
+    class Paddle {        +Enter()    
+
+        +float Y
+
+        +float Speed        +Update(deltaTime)    class PlayState {
+
+        +MoveUp()
+
+        +MoveDown()        +Exit()        -GameContext _context
+
+        +ResetSpeed()
+
+    }    }        +Enter()
+
+    
+
+    ICommand <|.. MoveUpCommand            +Update(deltaTime)
+
+    ICommand <|.. MoveDownCommand
+
+    ICommand <|.. StopPaddleCommand    GameManager --> StateMachine        +Exit()
+
+    InputHandler --> ICommand
+
+    MoveUpCommand --> Paddle    GameManager --> MenuState    }
+
+    MoveDownCommand --> Paddle
+
+    StopPaddleCommand --> Paddle    GameManager --> PlayState    
+
+```
+
+    GameManager --> GameOverState    class GameOverState {
+
+## 3. Component Pattern - Game Objects
+
+    StateMachine --> IGameState        -GameContext _context
+
+```mermaid
+
+classDiagram    IGameState <|.. MenuState        +Enter()
+
+    class IComponent {
+
+        <<interface>>    IGameState <|.. PlayState        +Update(deltaTime)
+
+        +Update(deltaTime)
+
+    }    IGameState <|.. GameOverState        +Exit()
+
+    
+
+    class GameObject {```    }
+
+        <<abstract>>
+
+        -List components    
+
+        +AddComponent(component)
+
+        +RemoveComponent(component)## 2. Command Pattern    GameManager --> StateMachine
+
+        +GetComponent()
+
+        +Update(deltaTime)    GameManager --> GameContext
+
+        +Draw()
+
+    }```mermaid    StateMachine --> IGameState
+
+    
+
+    class TransformComponent {classDiagram    IGameState <|.. MenuState
+
+        +float X
+
+        +float Y    class ICommand {    IGameState <|.. PlayState
+
+        +float Width
+
+        +float Height        <<interface>>    IGameState <|.. GameOverState
+
+        +GetBounds()
+
+        +Update(deltaTime)        +Execute()```
+
+    }
+
+            +Undo()
+
+    class MovementComponent {
+
+        -TransformComponent transform    }    %% Component Pattern
+
+        +Vector2D Velocity
+
+        +float Speed        class IComponent {
+
+        +SetVelocity(x, y)
+
+        +Update(deltaTime)    class MoveUpCommand {        <<interface>>
+
+    }
+
+            -Paddle _paddle        +Update(deltaTime)
+
+    class RenderComponent {
+
+        -TransformComponent transform        -float _previousY    }
+
+        +Color Color
+
+        +bool IsCircle        +MoveUpCommand(paddle)    
+
+        +Draw()
+
+        +Update(deltaTime)        +Execute()    class GameObject {
+
+    }
+
+            +Undo()        <<abstract>>
+
+    class Ball {
+
+        -TransformComponent transform    }        #List~IComponent~ _components
+
+        -MovementComponent movement
+
+        -RenderComponent render            +AddComponent(component)
+
+        +Draw()
+
+    }    class MoveDownCommand {        +RemoveComponent(component)
+
+    
+
+    class Paddle {        -Paddle _paddle        +GetComponent~T~()
+
+        -TransformComponent transform
+
+        -RenderComponent render        -float _previousY        +Update(deltaTime)
+
+        +Draw()
+
+    }        +MoveDownCommand(paddle)        +Draw()*
+
+    
+
+    class Wall {        +Execute()    }
+
+        -TransformComponent transform
+
+        -MovementComponent movement        +Undo()    
+
+        -RenderComponent render
+
+        +Draw()    }    class TransformComponent {
+
+    }
+
+                +float X
+
+    IComponent <|.. TransformComponent
+
+    IComponent <|.. MovementComponent    class StopPaddleCommand {        +float Y
+
+    IComponent <|.. RenderComponent
+
+    GameObject <|-- Ball        -Paddle _paddle        +float Width
+
+    GameObject <|-- Paddle
+
+    GameObject <|-- Wall        -float _previousSpeed        +float Height
+
+    GameObject --> IComponent
+
+    Ball --> TransformComponent        +StopPaddleCommand(paddle)        +GetBounds() Rectangle
+
+    Ball --> MovementComponent
+
+    Ball --> RenderComponent        +Execute()        +Update(deltaTime)
+
+    Paddle --> TransformComponent
+
+    Paddle --> RenderComponent        +Undo()    }
+
+    Wall --> TransformComponent
+
+    Wall --> MovementComponent    }    
+
+    Wall --> RenderComponent
+
+```        class MovementComponent {
+
+
+
+## 4. Observer Pattern - Score System    class InputHandler {        -TransformComponent _transform
+
+
+
+```mermaid        <<Invoker>>        +Vector2D Velocity
+
+classDiagram
+
+    class ISubject {        -Dictionary~KeyCode, ICommand~ _keyBindings        +float Speed
+
+        <<interface>>
+
+        +Attach(observer)        -List~ICommand~ _commandHistory        +SetVelocity(x, y)
+
+        +Detach(observer)
+
+        +Notify()        +InputHandler(leftPaddle, rightPaddle)        +Update(deltaTime)
+
+    }
+
+            +HandleKeyInput(leftPaddle, rightPaddle)    }
+
+    class IObserver {
+
+        <<interface>>        +UpdatePaddleMovement(leftPaddle, rightPaddle)    
+
+        +Update(subject)
+
+    }        +UndoLastCommand()    class RenderComponent {
+
+    
+
+    class ScoreSubject {    }        -TransformComponent _transform
+
+        -List observers
+
+        -Scoreboard scoreboard            +Color Color
+
+        -Ball ball
+
+        -SoundManager soundManager    class Paddle {        +bool IsCircle
+
+        +int LeftScore
+
+        +int RightScore        <<Receiver>>        +Draw()
+
+        +Attach(observer)
+
+        +Detach(observer)        +float Y        +Update(deltaTime)
+
+        +Notify()
+
+        +LeftPoint()        +float Speed    }
+
+        +RightPoint()
+
+        +Start()        +MoveUp()
+
+        +Reset()
+
+    }        +MoveDown()    %% Entities
+
+    
+
+    class UIScoreObserver {        +ResetSpeed()    class Ball {
+
+        -int leftScore
+
+        -int rightScore    }        -TransformComponent _transform
+
+        -bool gameStarted
+
+        +Update(subject)            -MovementComponent _movement
+
+        +DrawScore(windowWidth, windowHeight)
+
+    }    ICommand <|.. MoveUpCommand        -RenderComponent _render
+
+    
+
+    class ConsoleScoreObserver {    ICommand <|.. MoveDownCommand        -float _baseSpeed
+
+        +Update(subject)
+
+    }    ICommand <|.. StopPaddleCommand        -Vector2D _velocity
+
+    
+
+    class Scoreboard {    InputHandler --> ICommand        +float X
+
+        -int leftScore
+
+        -int rightScore    MoveUpCommand --> Paddle        +float Y
+
+        -bool gameStarted
+
+        +LeftPoint()    MoveDownCommand --> Paddle        +int Size
+
+        +RightPoint()
+
+        +Start()    StopPaddleCommand --> Paddle        +Color Color
+
+        +Reset()
+
+    }```        +float Speed
+
+    
+
+    ISubject <|.. ScoreSubject        +Move()
+
+    IObserver <|.. UIScoreObserver
+
+    IObserver <|.. ConsoleScoreObserver## 3. Component Pattern        +Bounce(surfaceNormal)
+
+    ScoreSubject --> IObserver
+
+    ScoreSubject --> Scoreboard        +ResetPosition()
+
+```
+
+```mermaid        +Draw()
+
+## 5. Decorator Pattern - Power-ups
+
+classDiagram    }
+
+```mermaid
+
+classDiagram    class IComponent {    
+
+    class IGameEntity {
+
+        <<interface>>        <<interface>>    class Paddle {
+
+        +GetSpeed()
+
+        +GetSize()        +Update(deltaTime)        -TransformComponent _transform
+
+        +Update(deltaTime)
+
+    }    }        -RenderComponent _render
+
+    
+
+    class Ball {            -const float BASE_SPEED
+
+        +GetSpeed()
+
+        +GetSize()    class GameObject {        -const float MAX_SPEED
+
+        +Update(deltaTime)
+
+    }        <<abstract>>        +float X
+
+    
+
+    class Paddle {        #List~IComponent~ _components        +float Y
+
+        +GetSpeed()
+
+        +GetSize()        +AddComponent(component)        +int Width
+
+        +Update(deltaTime)
+
+    }        +RemoveComponent(component)        +int Height
+
+    
+
+    class EntityDecorator {        +GetComponent~T~()        +float Speed
+
+        <<abstract>>
+
+        -IGameEntity wrappedEntity        +Update(deltaTime)        +MoveUp()
+
+        +GetSpeed()
+
+        +GetSize()        +Draw()*        +MoveDown()
+
+        +Update(deltaTime)
+
+    }    }        +ResetSpeed()
+
+    
+
+    class SpeedBoostDecorator {            +Draw()
+
+        -float speedMultiplier
+
+        -DateTime startTime    class TransformComponent {    }
+
+        -double duration
+
+        +GetSpeed()        +float X    
+
+        +IsActive()
+
+    }        +float Y    class Wall {
+
+    
+
+    class SpeedReductionDecorator {        +float Width        -TransformComponent _transform
+
+        -float speedMultiplier
+
+        -DateTime startTime        +float Height        -MovementComponent _movement
+
+        -double duration
+
+        +GetSpeed()        +TransformComponent(x, y, width, height)        -RenderComponent _render
+
+        +IsActive()
+
+    }        +GetBounds() Rectangle        +const int WALL_WIDTH
+
+    
+
+    class SizeBoostDecorator {        +Update(deltaTime)        +const int WALL_HEIGHT
+
+        -float sizeMultiplier
+
+        -DateTime startTime    }        +float X
+
+        -double duration
+
+        +GetSize()            +float Y
+
+        +IsActive()
+
+    }    class MovementComponent {        +float YSpeed
+
+    
+
+    IGameEntity <|.. Ball        -TransformComponent _transform        +Move()
+
+    IGameEntity <|.. Paddle
+
+    IGameEntity <|.. EntityDecorator        +Vector2D Velocity        +Draw()
+
+    EntityDecorator <|-- SpeedBoostDecorator
+
+    EntityDecorator <|-- SpeedReductionDecorator        +float Speed    }
+
+    EntityDecorator <|-- SizeBoostDecorator
+
+    EntityDecorator --> IGameEntity        +MovementComponent(transform, speed)    
+
+```
+
+        +SetVelocity(x, y)    class Scoreboard {
+
+## 6. Factory Pattern - Object Creation
+
+        +Update(deltaTime)        -int _leftScore
+
+```mermaid
+
+classDiagram    }        -int _rightScore
+
+    class IGameEntityFactory {
+
+        <<interface>>            -bool _gameStarted
+
+        +CreateBall(width, height)
+
+        +CreatePaddle(x, y, height)    class RenderComponent {        +int LeftScore
+
+        +CreateWall(x, y, height, speed)
+
+        +CreateScoreboard()        -TransformComponent _transform        +int RightScore
+
+        +CreateWalls(num, minDist, height)
+
+        +CalculateWallCount(totalScore, baseWalls)        +Color Color        +LeftPoint()
+
+    }
+
+            +bool IsCircle        +RightPoint()
+
+    class GameEntityFactory {
+
+        -Random random        +RenderComponent(transform, color, isCircle)        +Start()
+
+        +CreateBall(width, height)
+
+        +CreatePaddle(x, y, height)        +Draw()        +Reset()
+
+        +CreateWall(x, y, height, speed)
+
+        +CreateScoreboard()        +Update(deltaTime)    }
+
+        +CreateWalls(num, minDist, height)
+
+        +CalculateWallCount(totalScore, baseWalls)    }
+
+    }
+
+            %% Decorator Pattern
+
+    class EffectFactory {
+
+        +ApplyEffect(type, ball, leftPaddle, rightPaddle)    class Ball {    class IGameEntity {
+
+        +RemoveEffect(type, ball, leftPaddle, rightPaddle, height, speed)
+
+        +ResetAllEffects(ball, leftPaddle, rightPaddle, height)        -TransformComponent _transform        <<interface>>
+
+    }
+
+            -MovementComponent _movement        +GetSpeed() float
+
+    class ActiveEffectManager {
+
+        -List activeEffects        -RenderComponent _render        +GetSize() float
+
+        -EffectFactory effectFactory
+
+        +ApplyEffect(type, duration)        +Ball(windowWidth, windowHeight)        +Update(deltaTime)
+
+        +Update()
+
+        +ClearAllEffects()        +Draw()    }
+
+    }
+
+        }    
+
+    IGameEntityFactory <|.. GameEntityFactory
+
+    ActiveEffectManager --> EffectFactory        class EntityDecorator {
+
+```
+
+    class Paddle {        <<abstract>>
+
+## 7. Complete System Architecture
+
+        -TransformComponent _transform        #IGameEntity _wrappedEntity
+
+```mermaid
+
+classDiagram        -RenderComponent _render        +GetSpeed() float
+
+    class GameManager {
+
+        -GameManager instance        +Paddle(x, y, windowHeight)        +GetSize() float
+
+        -GameContext Context
+
+        -StateMachine StateMachine        +Draw()        +Update(deltaTime)
+
+        +Instance GameManager
+
+        +InitializeGame()    }    }
+
+        +Run()
+
+    }        
+
+    
+
+    class GameContext {    class Wall {    class SpeedBoostDecorator {
+
+        +Ball Ball
+
+        +Paddle LeftPaddle        -TransformComponent _transform        -float _speedMultiplier
+
+        +Paddle RightPaddle
+
+        +List Walls        -MovementComponent _movement        -DateTime _startTime
+
+        +ScoreSubject ScoreSubject
+
+        +SoundManager SoundManager        -RenderComponent _render        -double _duration
+
+        +PowerUpManager PowerUpManager
+
+        +ActiveEffectManager ActiveEffectManager        +Wall(x, y, windowHeight, speedMultiplier)        +GetSpeed() float
+
+        +InputHandler InputHandler
+
+    }        +Draw()        +IsActive() bool
+
+    
+
+    class StateMachine {    }    }
+
+        -IGameState currentState
+
+        -Dictionary states        
+
+        +AddState(name, state)
+
+        +ChangeState(stateName)    IComponent <|.. TransformComponent    class SpeedReductionDecorator {
+
+        +Update(deltaTime)
+
+    }    IComponent <|.. MovementComponent        -float _speedMultiplier
+
+    
+
+    class IGameState {    IComponent <|.. RenderComponent        -DateTime _startTime
+
+        <<interface>>
+
+        +Enter()    GameObject <|-- Ball        -double _duration
+
+        +Update(deltaTime)
+
+        +Exit()    GameObject <|-- Paddle        +GetSpeed() float
+
+    }
+
+        GameObject <|-- Wall        +IsActive() bool
+
+    class Ball {
+
+        +Move()    GameObject --> IComponent    }
+
+        +Bounce()
+
+        +Draw()    Ball --> TransformComponent    
+
+    }
+
+        Ball --> MovementComponent    class SizeBoostDecorator {
+
+    class Paddle {
+
+        +MoveUp()    Ball --> RenderComponent        -float _sizeMultiplier
+
+        +MoveDown()
+
+        +Draw()    Paddle --> TransformComponent        -DateTime _startTime
+
+    }
+
+        Paddle --> RenderComponent        -double _duration
+
+    class Wall {
+
+        +Move()    Wall --> TransformComponent        +GetSize() float
+
+        +Draw()
+
+    }    Wall --> MovementComponent        +IsActive() bool
+
+    
+
+    class ScoreSubject {    Wall --> RenderComponent    }
+
+        +LeftPoint()
+
+        +RightPoint()```
+
+        +Notify()
+
+    }    %% Observer Pattern
+
+    
+
+    class InputHandler {## 4. Observer Pattern    class ISubject {
+
+        +HandleKeyInput()
+
+    }        <<interface>>
+
+    
+
+    class ActiveEffectManager {```mermaid        +Attach(observer)
+
+        +ApplyEffect()
+
+        +Update()classDiagram        +Detach(observer)
+
+    }
+
+        class ISubject {        +Notify()
+
+    GameManager --> GameContext
+
+    GameManager --> StateMachine        <<interface>>    }
+
+    GameContext --> Ball
+
+    GameContext --> Paddle        +Attach(observer)    
+
+    GameContext --> Wall
+
+    GameContext --> ScoreSubject        +Detach(observer)    class IObserver {
+
+    GameContext --> InputHandler
+
+    GameContext --> ActiveEffectManager        +Notify()        <<interface>>
+
+    StateMachine --> IGameState
+
+```    }        +Update(subject)
+
 
         }
 
