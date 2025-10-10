@@ -2,7 +2,7 @@
 
 ## Design Patterns Overview
 
-This project implements 7 core design patterns: Singleton, State, Component, Decorator, Factory, Observer, and Command.
+This project implements 6 core design patterns: Singleton, State, Component, Decorator, Factory, and Observer.
 
 ---
 
@@ -294,31 +294,29 @@ classDiagram
 
 ---
 
-## 7. Command Pattern
+## 7. Simplified Input Handling (Command Pattern Removed)
 
 ```mermaid
 classDiagram
-    class ICommand {
-        <<interface>>
-        +Execute()
-        +Undo()
+    class InputHandler {
+        +HandleKeyInput(leftPaddle, rightPaddle)
+        +UpdatePaddleMovement(leftPaddle, rightPaddle)
     }
     
-    class MoveUpCommand {
-        -Paddle _paddle
-        +Execute()
-        +Undo()
+    class Paddle {
+        +MoveUp()
+        +MoveDown()
+        +ResetSpeed()
     }
     
-    class MoveDownCommand {
-        -Paddle _paddle
-        +Execute()
-        +Undo()
-    }
-    
-    ICommand <|.. MoveUpCommand
-    ICommand <|.. MoveDownCommand
+    InputHandler --> Paddle : calls directly
 ```
+
+**Rationale for Simplification:**
+- Command Pattern was over-engineering for simple paddle movement
+- Undo/Redo functionality was not utilized in gameplay
+- Direct method calls reduce complexity by ~50%
+- Easier to understand and maintain
 
 ---
 
@@ -338,15 +336,34 @@ classDiagram
     }
     
     class GameContext {
+        +GameEntities Entities
+        +GameServices Services
+        +ScoreSubject ScoreSubject
+        +int WindowWidth
+        +int WindowHeight
         +Ball Ball
         +Paddle LeftPaddle
         +Paddle RightPaddle
-        +ScoreSubject ScoreSubject
         +List~Wall~ Walls
         +SoundManager SoundManager
         +PowerUpManager PowerUpManager
         +ActiveEffectManager ActiveEffectManager
         +InitializeScoreSubject()
+    }
+    
+    class GameEntities {
+        +Ball Ball
+        +Paddle LeftPaddle
+        +Paddle RightPaddle
+        +List~Wall~ Walls
+        +ResetPositions()
+    }
+    
+    class GameServices {
+        +SoundManager SoundManager
+        +PowerUpManager PowerUpManager
+        +ActiveEffectManager ActiveEffectManager
+        +ClearAll()
     }
     
     class StateMachine {
@@ -389,10 +406,15 @@ classDiagram
     
     GameManager *-- GameContext
     GameManager *-- StateMachine
-    GameContext *-- Ball
-    GameContext *-- Paddle
-    GameContext *-- Wall
+    GameContext *-- GameEntities
+    GameContext *-- GameServices
     GameContext *-- ScoreSubject
+    GameEntities *-- Ball
+    GameEntities *-- Paddle
+    GameEntities *-- Wall
+    GameServices *-- SoundManager
+    GameServices *-- PowerUpManager
+    GameServices *-- ActiveEffectManager
     ScoreSubject *-- Scoreboard
 ```
 
@@ -499,8 +521,8 @@ classDiagram
     }
     
     class InputHandler {
-        +HandleInput(context)
-        +ProcessCommands()
+        +HandleKeyInput(leftPaddle, rightPaddle)
+        +UpdatePaddleMovement(leftPaddle, rightPaddle)
     }
     
     class CollisionHandler {
@@ -621,19 +643,3 @@ sequenceDiagram
 
 ## Design Patterns Summary
 
-| Pattern | Purpose | Key Classes |
-|---------|---------|-------------|
-| **Singleton** | Single game instance | `GameManager` |
-| **State** | Game state management | `IGameState`, `StateMachine`, `MenuState`, `PlayState`, `GameOverState` |
-| **Component** | Modular entity composition | `IComponent`, `GameObject`, `TransformComponent`, `MovementComponent`, `RenderComponent` |
-| **Decorator** | Dynamic ability addition | `IGameEntity`, `EntityDecorator`, `SpeedBoostDecorator`, `SizeBoostDecorator` |
-| **Factory** | Entity creation | `IGameEntityFactory`, `GameEntityFactory` |
-| **Observer** | Event notification | `IObserver`, `ISubject`, `ScoreSubject`, `SoundScoreObserver`, `WallScoreObserver` |
-| **Command** | Input encapsulation | `ICommand`, `MoveUpCommand`, `MoveDownCommand` |
-
----
-
-**Generated**: October 10, 2025  
-**Project**: C# Pong Game with Design Patterns  
-**Framework**: .NET 8.0 with SplashKit  
-**Diagrams**: Mermaid (GitHub Compatible)

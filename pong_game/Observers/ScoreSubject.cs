@@ -8,6 +8,7 @@ namespace PongGame.Entities
     /// <summary>
     /// Scoreboard with Observer Pattern - notifies observers when score changes
     /// Integrates ScoreManager functionality (boundary checking and game over logic)
+    /// Improved with better dependency management
     /// </summary>
     public class ScoreSubject : ISubject
     {
@@ -15,7 +16,7 @@ namespace PongGame.Entities
         private readonly Scoreboard _scoreboard;
         private const int WINNING_SCORE = 10;
 
-        // Game context dependencies (injected)
+        // Game context dependencies
         private Ball? _ball;
         private SoundManager? _soundManager;
         private ActiveEffectManager? _activeEffectManager;
@@ -31,6 +32,7 @@ namespace PongGame.Entities
 
         /// <summary>
         /// Inject dependencies for score management
+        /// Called during GameContext initialization
         /// </summary>
         public void InjectDependencies(Ball ball, SoundManager? soundManager, ActiveEffectManager? activeEffectManager = null)
         {

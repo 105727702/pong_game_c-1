@@ -39,9 +39,9 @@ namespace PongGame.Core.State
         {
             // Reset game state using ScoreSubject (Observer Pattern)
             _context.ScoreSubject.Reset();
-            _context.Ball.ResetPosition();
-            _context.LeftPaddle.ResetPosition();
-            _context.RightPaddle.ResetPosition();
+            
+            // Reset all entity positions using GameEntities wrapper
+            _context.Entities.ResetPositions();
             
             // Regenerate walls using Factory Pattern
             _context.Walls.Clear();
@@ -70,7 +70,7 @@ namespace PongGame.Core.State
         public void Exit()
         {
             // Stop game over music when leaving this state (restarting or returning to menu)
-            _context.SoundManager?.StopMusic();
+            _context.Services.SoundManager?.StopMusic();
             
             // Reset game over flag when exiting
             GameManager.Instance.GameOver = false;

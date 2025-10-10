@@ -22,12 +22,11 @@ namespace PongGame.Core.State
 
         public void Enter()
         {
-            // Initialize InputHandler with Command Pattern
-            _inputHandler = new InputHandler(_context.LeftPaddle, _context.RightPaddle);
+            // Initialize InputHandler - simplified without Command Pattern
+            _inputHandler = new InputHandler();
             
-            // Clear power-ups and effects when starting/restarting game
-            _context.PowerUpManager?.Clear();
-            _context.ActiveEffectManager?.ClearAllEffects();
+            // Clear power-ups and effects using GameServices wrapper
+            _context.Services.ClearAll();
             
             // Start the scoreboard timer using Observer Pattern
             _context.ScoreSubject.Start();
