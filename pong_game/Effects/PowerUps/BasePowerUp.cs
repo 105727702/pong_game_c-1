@@ -1,25 +1,30 @@
 using PongGame.Entities;
-using PongGame.Decorators;
 using SplashKitSDK;
 using System;
 
-namespace PongGame.Factories
+namespace PongGame.Effects
 {
     /// <summary>
-    /// Base power-up implementation
+    /// Concrete power-up implementation
+    /// No need for subclasses - type is determined by constructor parameter
+    /// Effects are applied through EffectFactory
     /// </summary>
-    public abstract class BasePowerUp : IPowerUp
+    public class PowerUp : IPowerUp
     {
-        public float X { get; protected set; }
-        public float Y { get; protected set; }
-        public abstract PowerUpType Type { get; }
-        protected const int Size = 20;
-        protected Color _color;
+        public float X { get; private set; }
+        public float Y { get; private set; }
+        public PowerUpType Type { get; private set; }
+        private const int Size = 20;
+        private readonly Color _color;
         private readonly DateTime _spawnTime;
         private readonly double _lifetime;
 
-        protected BasePowerUp(float x, float y, Color color, double lifetime = 10.0)
+        /// <summary>
+        /// Create a power-up with specified type and color
+        /// </summary>
+        public PowerUp(PowerUpType type, float x, float y, Color color, double lifetime = 10.0)
         {
+            Type = type;
             X = x;
             Y = y;
             _color = color;
@@ -27,7 +32,7 @@ namespace PongGame.Factories
             _lifetime = lifetime;
         }
 
-        public virtual void Draw()
+        public void Draw()
         {
             // Add pulsing effect based on remaining lifetime
             double timeRemaining = GetRemainingLifetime();
@@ -66,7 +71,5 @@ namespace PongGame.Factories
             double elapsed = (DateTime.Now - _spawnTime).TotalSeconds;
             return Math.Max(0, _lifetime - elapsed);
         }
-
-        public abstract void Apply(IGameEntity entity);
     }
 }

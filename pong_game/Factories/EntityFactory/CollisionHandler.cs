@@ -1,6 +1,8 @@
 using SplashKitSDK;
 using System.Collections.Generic;
 using PongGame.Entities;
+using PongGame.Effects;
+using PongGame.Services;
 
 namespace PongGame.Factories
 {

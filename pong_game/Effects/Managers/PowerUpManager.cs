@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using PongGame.Entities;
 using PongGame.Services;
 
-namespace PongGame.Factories
+namespace PongGame.Effects
 {
     /// <summary>
     /// Manages power-up spawning, collision detection, and effects

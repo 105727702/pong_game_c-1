@@ -1,5 +1,5 @@
 using PongGame.Services;
-using PongGame.Factories;
+using PongGame.Effects;
 
 namespace PongGame.Core
 {

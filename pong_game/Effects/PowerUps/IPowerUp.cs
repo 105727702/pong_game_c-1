@@ -1,10 +1,10 @@
 using PongGame.Entities;
-using PongGame.Decorators;
 
-namespace PongGame.Factories
+namespace PongGame.Effects
 {
     /// <summary>
     /// Interface for power-up items
+    /// Power-ups are visual collectibles that trigger effects through EffectFactory
     /// </summary>
     public interface IPowerUp
     {
@@ -15,6 +15,5 @@ namespace PongGame.Factories
         bool IsColliding(Ball ball);
         bool IsExpired();
         double GetRemainingLifetime();
-        void Apply(IGameEntity entity);
     }
 }

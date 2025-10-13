@@ -1,16 +1,15 @@
 using System;
 using SplashKitSDK;
 using PongGame.Services;
-using PongGame.Decorators;
 using PongGame.Components;
 
 namespace PongGame.Entities
 {
     /// <summary>
     /// Ball entity using Component Pattern
-    /// Inherits from GameObject and implements IGameEntity for Decorator support
+    /// Inherits from GameObject
     /// </summary>
-    public class Ball : GameObject, IGameEntity
+    public class Ball : GameObject
     {
         // Components
         private TransformComponent _transform;
@@ -160,23 +159,6 @@ namespace PongGame.Entities
         public override void Draw()
         {
             _render.Draw();
-        }
-
-        // IGameEntity implementation for Decorator Pattern
-        float IGameEntity.GetSpeed()
-        {
-            return Speed;
-        }
-
-        float IGameEntity.GetSize()
-        {
-            return Size;
-        }
-
-        void IGameEntity.Update(float deltaTime)
-        {
-            Move();
-            base.Update(deltaTime); // Call GameObject's Update to update all components
         }
     }
 }

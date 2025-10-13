@@ -1,20 +1,14 @@
+using PongGame.Entities;
+
 namespace PongGame.Observers
 {
     /// <summary>
-    /// Observer Pattern - Subject interface
-    /// </summary>
-    public interface ISubject
-    {
-        void Attach(IObserver observer);
-        void Detach(IObserver observer);
-        void Notify();
-    }
-
-    /// <summary>
     /// Observer Pattern - Observer interface
+    /// Observers are notified when ScoreSubject changes
+    /// Note: ISubject interface removed - only ScoreSubject exists (no need for abstraction)
     /// </summary>
     public interface IObserver
     {
-        void Update(ISubject subject);
+        void Update(ScoreSubject subject);
     }
 }

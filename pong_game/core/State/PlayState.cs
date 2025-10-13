@@ -1,4 +1,5 @@
 using PongGame.Services;
+using PongGame.Effects;
 using PongGame.Factories;
 
 namespace PongGame.Core.State
@@ -22,8 +23,8 @@ namespace PongGame.Core.State
 
         public void Enter()
         {
-            // Initialize InputHandler - simplified without Command Pattern
-            _inputHandler = new InputHandler();
+            // Initialize InputHandler with Command Pattern
+            _inputHandler = new InputHandler(_context.LeftPaddle, _context.RightPaddle);
             
             // Clear power-ups and effects using GameServices wrapper
             _context.Services.ClearAll();
@@ -38,7 +39,7 @@ namespace PongGame.Core.State
             _context.Ball.Move();
             if (_inputHandler != null)
             {
-                _inputHandler.UpdatePaddleMovement(_context.LeftPaddle, _context.RightPaddle);
+                _inputHandler.UpdatePaddleMovement();
             }
 
             // Update power-ups (remove expired ones)
@@ -88,7 +89,7 @@ namespace PongGame.Core.State
         {
             if (_inputHandler != null)
             {
-                _inputHandler.HandleKeyInput(_context.LeftPaddle, _context.RightPaddle);
+                _inputHandler.HandleKeyInput();
             }
         }
 

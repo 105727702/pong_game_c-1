@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using PongGame.Observers;
 using PongGame.Services;
-using PongGame.Factories;
+using PongGame.Effects;
 
 namespace PongGame.Entities
 {
@@ -9,8 +9,9 @@ namespace PongGame.Entities
     /// Scoreboard with Observer Pattern - notifies observers when score changes
     /// Integrates ScoreManager functionality (boundary checking and game over logic)
     /// Improved with better dependency management
+    /// Note: ISubject interface removed as unnecessary abstraction (only one Subject in game)
     /// </summary>
-    public class ScoreSubject : ISubject
+    public class ScoreSubject
     {
         private readonly List<IObserver> _observers = new List<IObserver>();
         private readonly Scoreboard _scoreboard;

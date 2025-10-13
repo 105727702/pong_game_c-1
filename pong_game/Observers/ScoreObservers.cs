@@ -17,17 +17,14 @@ namespace PongGame.Observers
         public int RightScore => _rightScore;
         public bool GameStarted => _gameStarted;
 
-        public void Update(ISubject subject)
+        public void Update(ScoreSubject subject)
         {
-            if (subject is ScoreSubject scoreSubject)
-            {
-                _leftScore = scoreSubject.LeftScore;
-                _rightScore = scoreSubject.RightScore;
-                _gameStarted = scoreSubject.GameStarted;
-                
-                // Log score change for debugging
-                Console.WriteLine($"[UI Observer] Score updated: Left {_leftScore} - Right {_rightScore}");
-            }
+            _leftScore = subject.LeftScore;
+            _rightScore = subject.RightScore;
+            _gameStarted = subject.GameStarted;
+            
+            // Log score change for debugging
+            Console.WriteLine($"[UI Observer] Score updated: Left {_leftScore} - Right {_rightScore}");
         }
 
         public void DrawScore(int windowWidth, int windowHeight)
@@ -45,12 +42,9 @@ namespace PongGame.Observers
     /// </summary>
     public class ConsoleScoreObserver : IObserver
     {
-        public void Update(ISubject subject)
+        public void Update(ScoreSubject subject)
         {
-            if (subject is ScoreSubject scoreSubject)
-            {
-                Console.WriteLine($"[Console Log] Score Update - Left: {scoreSubject.LeftScore}, Right: {scoreSubject.RightScore}");
-            }
+            Console.WriteLine($"[Console Log] Score Update - Left: {subject.LeftScore}, Right: {subject.RightScore}");
         }
     }
 }

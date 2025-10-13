@@ -1,4 +1,4 @@
-namespace PongGame.Factories
+namespace PongGame.Effects
 {
     /// <summary>
     /// Enum for different types of power-ups

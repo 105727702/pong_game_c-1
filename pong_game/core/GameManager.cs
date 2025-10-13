@@ -2,6 +2,7 @@ using PongGame.Entities;
 using PongGame.Core.State;
 using PongGame.Services;
 using PongGame.UI;
+using PongGame.Effects;
 using PongGame.Factories;
 using SplashKitSDK;
 

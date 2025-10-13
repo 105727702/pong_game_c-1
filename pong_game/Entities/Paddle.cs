@@ -1,14 +1,13 @@
 using SplashKitSDK;
-using PongGame.Decorators;
 using PongGame.Components;
 
 namespace PongGame.Entities
 {
     /// <summary>
     /// Paddle entity using Component Pattern
-    /// Inherits from GameObject and implements IGameEntity for Decorator support
+    /// Inherits from GameObject
     /// </summary>
-    public class Paddle : GameObject, IGameEntity
+    public class Paddle : GameObject
     {
         private const float BASE_SPEED = 3.5f;
         private const float MAX_SPEED = 6f;
@@ -115,22 +114,6 @@ namespace PongGame.Entities
         public override void Draw()
         {
             _render.Draw();
-        }
-
-        // IGameEntity implementation for Decorator Pattern
-        float IGameEntity.GetSpeed()
-        {
-            return Speed;
-        }
-
-        float IGameEntity.GetSize()
-        {
-            return Height;
-        }
-
-        void IGameEntity.Update(float deltaTime)
-        {
-            base.Update(deltaTime); // Call GameObject's Update to update all components
         }
     }
 }
