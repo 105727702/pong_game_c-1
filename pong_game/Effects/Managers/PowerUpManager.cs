@@ -8,6 +8,7 @@ namespace PongGame.Effects
     /// <summary>
     /// Manages power-up spawning, collision detection, and effects
     /// Replaces old PotionEffectManager with Factory Pattern
+    /// Uses dependency injection for PowerUpFactory
     /// </summary>
     public class PowerUpManager
     {
@@ -15,15 +16,17 @@ namespace PongGame.Effects
         private readonly Random _random;
         private readonly int _windowWidth;
         private readonly int _windowHeight;
+        private readonly IPowerUpFactory _powerUpFactory;
         private const int MAX_POWERUPS = 3; // Maximum number of power-ups on screen
         private const double POWERUP_LIFETIME = 8.0; // Power-ups disappear after 8 seconds
 
-        public PowerUpManager(int windowWidth, int windowHeight)
+        public PowerUpManager(int windowWidth, int windowHeight, IPowerUpFactory? powerUpFactory = null)
         {
             _activePowerUps = new List<IPowerUp>();
             _random = new Random();
             _windowWidth = windowWidth;
             _windowHeight = windowHeight;
+            _powerUpFactory = powerUpFactory ?? new PowerUpFactory(); // Default if not provided
         }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace PongGame.Effects
             PowerUpType[] types = { PowerUpType.SpeedBoost, PowerUpType.SpeedReduction, PowerUpType.SizeBoost };
             PowerUpType randomType = types[_random.Next(types.Length)];
 
-            IPowerUp powerUp = PowerUpFactory.CreatePowerUp(randomType, x, y);
+            IPowerUp powerUp = _powerUpFactory.CreatePowerUp(randomType, x, y);
             _activePowerUps.Add(powerUp);
 
             soundManager?.PlayEffect(SoundType.PotionEffect);

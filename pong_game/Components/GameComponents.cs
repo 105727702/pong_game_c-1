@@ -1,5 +1,6 @@
 using SplashKitSDK;
 using PongGame.Entities;
+using PongGame.Services;
 
 namespace PongGame.Components
 {
@@ -62,18 +63,22 @@ namespace PongGame.Components
 
     /// <summary>
     /// Render component - handles visual rendering
+    /// Uses IRenderer abstraction to decouple from SplashKit (Dependency Inversion)
     /// </summary>
     public class RenderComponent : IComponent
     {
         private readonly TransformComponent _transform;
+        private readonly IRenderer _renderer;
+        
         public Color Color { get; set; }
         public bool IsCircle { get; set; }
 
-        public RenderComponent(TransformComponent transform, Color color, bool isCircle = false)
+        public RenderComponent(TransformComponent transform, Color color, bool isCircle = false, IRenderer? renderer = null)
         {
             _transform = transform;
             Color = color;
             IsCircle = isCircle;
+            _renderer = renderer ?? new SplashKitRenderer(); // Default to SplashKit if not provided
         }
 
         public void Update(float deltaTime)
@@ -85,12 +90,15 @@ namespace PongGame.Components
         {
             if (IsCircle)
             {
-                SplashKit.FillCircle(Color, _transform.X + _transform.Width / 2, 
-                    _transform.Y + _transform.Height / 2, _transform.Width / 2);
+                _renderer.DrawCircle(Color, 
+                    _transform.X + _transform.Width / 2, 
+                    _transform.Y + _transform.Height / 2, 
+                    _transform.Width / 2);
             }
             else
             {
-                SplashKit.FillRectangle(Color, _transform.X, _transform.Y, 
+                _renderer.DrawRectangle(Color, 
+                    _transform.X, _transform.Y, 
                     _transform.Width, _transform.Height);
             }
         }

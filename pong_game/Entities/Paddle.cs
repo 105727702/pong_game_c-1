@@ -19,35 +19,41 @@ namespace PongGame.Entities
 
         // Paddle-specific properties
         private readonly int _windowHeight;
-        public float Speed { get; set; }
+        private float _speed;
+
+        public float Speed 
+        { 
+            get => _speed;
+            internal set => _speed = value; // ✅ Internal setter - for effects and commands
+        }
         public float StartX { get; private set; }
         public float StartY { get; private set; }
 
-        // Public properties for external access
+        // Public properties for external access - read-only where possible
         public float X 
         { 
             get => _transform.X;
-            set => _transform.X = value;
+            private set => _transform.X = value; // ✅ Private setter
         }
         public float Y 
         { 
             get => _transform.Y;
-            set => _transform.Y = value;
+            internal set => _transform.Y = value; // ✅ Internal - for commands
         }
         public int Width 
         { 
             get => (int)_transform.Width;
-            set => _transform.Width = value;
+            private set => _transform.Width = value; // ✅ Private setter
         }
         public int Height 
         { 
             get => (int)_transform.Height;
-            set => _transform.Height = value;
+            internal set => _transform.Height = value; // ✅ Internal - only for effects
         }
         public Color Color 
         { 
             get => _render.Color;
-            set => _render.Color = value;
+            internal set => _render.Color = value; // ✅ Internal - for effects
         }
 
         public Paddle(float x, float y, int windowHeight)
@@ -85,13 +91,13 @@ namespace PongGame.Entities
 
         public void ResetSpeed()
         {
-            Speed = BASE_SPEED;
+            Speed = BASE_SPEED; // ✅ Use private setter through this
         }
 
         private void IncreaseSpeed()
         {
             if (Speed < MAX_SPEED)
-                Speed += FORCE;
+                Speed += FORCE; // ✅ Use private setter through this
         }
 
         public void ResetPosition()

@@ -1,52 +1,59 @@
 using System;
+using System.Collections.Generic;
 using PongGame.Entities;
 using SplashKitSDK;
 
 namespace PongGame.Effects
 {
     /// <summary>
-    /// Factory Pattern - Creates and applies power-up effects
-    /// Separates effect creation logic from effect management
+    /// Strategy Pattern - Factory that creates and manages effect strategies
+    /// Uses polymorphism to replace switch statements with strategy objects
+    /// Follows Open/Closed Principle - open for extension, closed for modification
     /// </summary>
     public class EffectFactory
     {
-        /// <summary>
-        /// Create and apply effect to game entities
-        /// </summary>
-        public void ApplyEffect(PowerUpType type, Ball ball, Paddle leftPaddle, Paddle rightPaddle)
+        private readonly Dictionary<PowerUpType, IEffect> _effectStrategies;
+
+        public EffectFactory()
         {
-            switch (type)
+            // Initialize strategy map - easy to extend with new effects
+            _effectStrategies = new Dictionary<PowerUpType, IEffect>
             {
-                case PowerUpType.SpeedBoost:
-                    ApplySpeedBoost(ball);
-                    break;
-
-                case PowerUpType.SpeedReduction:
-                    ApplySpeedReduction(ball);
-                    break;
-
-                case PowerUpType.SizeBoost:
-                    ApplySizeBoost(leftPaddle, rightPaddle);
-                    break;
-            }
+                { PowerUpType.SpeedBoost, new SpeedBoostEffect() },
+                { PowerUpType.SpeedReduction, new SpeedReductionEffect() },
+                { PowerUpType.SizeBoost, new SizeBoostEffect() }
+            };
         }
 
         /// <summary>
-        /// Remove effect from game entities
+        /// Get effect strategy for the given power-up type
+        /// </summary>
+        public IEffect GetEffect(PowerUpType type)
+        {
+            if (_effectStrategies.TryGetValue(type, out var effect))
+            {
+                return effect;
+            }
+
+            throw new ArgumentException($"Unknown power-up type: {type}");
+        }
+
+        /// <summary>
+        /// Apply effect using Strategy Pattern - delegates to appropriate strategy
+        /// </summary>
+        public void ApplyEffect(PowerUpType type, Ball ball, Paddle leftPaddle, Paddle rightPaddle)
+        {
+            var effect = GetEffect(type);
+            effect.Apply(ball, leftPaddle, rightPaddle);
+        }
+
+        /// <summary>
+        /// Remove effect using Strategy Pattern - delegates to appropriate strategy
         /// </summary>
         public void RemoveEffect(PowerUpType type, Ball ball, Paddle leftPaddle, Paddle rightPaddle, int originalPaddleHeight, float originalBallSpeed)
         {
-            switch (type)
-            {
-                case PowerUpType.SpeedBoost:
-                case PowerUpType.SpeedReduction:
-                    ResetSpeed(ball);
-                    break;
-
-                case PowerUpType.SizeBoost:
-                    ResetSize(leftPaddle, rightPaddle, originalPaddleHeight);
-                    break;
-            }
+            var effect = GetEffect(type);
+            effect.Remove(ball, leftPaddle, rightPaddle, originalPaddleHeight);
         }
 
         /// <summary>
@@ -65,46 +72,5 @@ namespace PongGame.Effects
             leftPaddle.Color = Color.White;
             rightPaddle.Color = Color.White;
         }
-
-        #region Private Effect Application Methods
-
-        private void ApplySpeedBoost(Ball ball)
-        {
-            ball.SetSpeed(ball.Speed + 3f);
-            ball.NormalizeVelocity();
-            ball.SetColor(Color.Yellow);
-        }
-
-        private void ApplySpeedReduction(Ball ball)
-        {
-            ball.SetSpeed(Math.Max(3f, ball.Speed - 3f));
-            ball.NormalizeVelocity();
-            ball.SetColor(Color.Blue);
-        }
-
-        private void ApplySizeBoost(Paddle leftPaddle, Paddle rightPaddle)
-        {
-            leftPaddle.Height = 150;
-            rightPaddle.Height = 150;
-            leftPaddle.Color = Color.Green;
-            rightPaddle.Color = Color.Green;
-        }
-
-        private void ResetSpeed(Ball ball)
-        {
-            ball.ResetSpeed();
-            ball.NormalizeVelocity();
-            ball.SetColor(Color.White);
-        }
-
-        private void ResetSize(Paddle leftPaddle, Paddle rightPaddle, int originalHeight)
-        {
-            leftPaddle.Height = originalHeight;
-            rightPaddle.Height = originalHeight;
-            leftPaddle.Color = Color.White;
-            rightPaddle.Color = Color.White;
-        }
-
-        #endregion
     }
 }

@@ -54,6 +54,7 @@ classDiagram
     
     class PlayState {
         -GameContext _context
+        -ICollisionHandler _collisionHandler
         -InputHandler _inputHandler
         +Enter()
         +Update()
@@ -150,6 +151,7 @@ classDiagram
     
     class RenderComponent {
         -TransformComponent _transform
+        -IRenderer _renderer
         +Color Color
         +bool IsCircle
         +Update()
@@ -201,14 +203,15 @@ classDiagram
         -TransformComponent _transform
         -RenderComponent _render
         -int _windowHeight
-        +float Speed
-        +float StartX
-        +float StartY
-        +float X
-        +float Y
-        +int Width
-        +int Height
-        +Color Color
+        -float _speed
+        +float Speed~get, internal set~
+        +float StartX~get, private set~
+        +float StartY~get, private set~
+        +float X~get, private set~
+        +float Y~get, internal set~
+        +int Width~get, private set~
+        +int Height~get, internal set~
+        +Color Color~get, internal set~
         +MoveUp()
         +MoveDown()
         +ResetSpeed()
@@ -223,29 +226,35 @@ classDiagram
         -MovementComponent _movement
         -RenderComponent _render
         -int _windowHeight
-        +float X
-        +float Y
-        +int Width
-        +int Height
-        +Color Color
-        +float YSpeed
+        +float X~get, private set~
+        +float Y~get, private set~
+        +int Width~get~
+        +int Height~get~
+        +Color Color~get, private set~
+        +float YSpeed~get, private set~
         +Move()
-        +IsValidPosition()$
+        +GetBounds()
+        +Draw()
     }
     style Wall fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
     
     class Vector2D {
-        +float X
-        +float Y
-        +Add()
-        +Subtract()
-        +Multiply()
+        <<immutable readonly struct>>
+        +float X~get, init~
+        +float Y~get, init~
+        +Add() Vector2D
+        +Subtract() Vector2D
+        +Multiply() Vector2D
         +Magnitude float
-        +Normalize()
-        +Limit()
-        +DotProduct()
-        +Copy()
+        +Normalize() Vector2D
+        +Limit() Vector2D
+        +DotProduct() float
+        +Copy() Vector2D
+        +operator+()$
+        +operator-()$
+        +operator*()$
     }
+    style Vector2D fill:#fff3e0,stroke:#ff9800,stroke-width:3px
     
     class Scoreboard {
         +int LeftScore
@@ -392,7 +401,7 @@ classDiagram
     }
     
     %% ============================================
-    %% POWER-UP SYSTEM (Effects Layer)
+    %% POWER-UP SYSTEM
     %% ============================================
     
     class PowerUpType {
@@ -415,19 +424,34 @@ classDiagram
     style IPowerUp fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
     
     class PowerUp {
-        -float X
-        -float Y
-        -PowerUpType Type
+        -float _x
+        -float _y
         -Color _color
         -DateTime _spawnTime
         -double _lifetime
-        +PowerUp(type, x, y, color, lifetime)
+        +PowerUpType Type
+        +float X
+        +float Y
+        +Color Color
         +Draw()
+        +Update()
         +IsColliding()
         +IsExpired()
         +GetRemainingLifetime()
     }
     style PowerUp fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    
+    class IPowerUpFactory {
+        <<interface>>
+        +CreatePowerUp()
+    }
+    style IPowerUpFactory fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    
+    class PowerUpFactory {
+        +CreatePowerUp()
+        -GetColorForType()
+    }
+    style PowerUpFactory fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
     
     class PowerUpManager {
         -List~IPowerUp~ _activePowerUps
@@ -496,12 +520,87 @@ classDiagram
         -TryLoadSound()
     }
     
-    class CollisionHandler {
-        <<static>>
-        +CheckCollision()$
-        +ResolveCollision()$
-        +HandleCollisions()$
+    class ICollisionHandler {
+        <<interface>>
+        +CheckCollision()
+        +ResolveCollision()
+        +HandleCollisions()
     }
+    style ICollisionHandler fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    
+    class CollisionHandler {
+        -Random _random
+        -SoundManager _soundManager
+        -PowerUpManager _powerUpManager
+        +CheckCollision()
+        +ResolveCollision()
+        +HandleCollisions()
+    }
+    style CollisionHandler fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    
+    class IWallValidator {
+        <<interface>>
+        +IsValidPosition()
+    }
+    style IWallValidator fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    
+    class WallValidator {
+        +IsValidPosition()
+    }
+    style WallValidator fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    
+    class IRenderer {
+        <<interface>>
+        +DrawCircle()
+        +DrawRectangle()
+        +DrawText()
+        +GetTextWidth()
+        +GetTextHeight()
+    }
+    style IRenderer fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    
+    class SplashKitRenderer {
+        +DrawCircle()
+        +DrawRectangle()
+        +DrawText()
+        +GetTextWidth()
+        +GetTextHeight()
+    }
+    style SplashKitRenderer fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    
+    class IEffect {
+        <<interface>>
+        +Apply()
+        +Remove()
+    }
+    style IEffect fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    
+    class SpeedBoostEffect {
+        +Apply()
+        +Remove()
+    }
+    style SpeedBoostEffect fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    
+    class SpeedReductionEffect {
+        +Apply()
+        +Remove()
+    }
+    style SpeedReductionEffect fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    
+    class SizeBoostEffect {
+        +Apply()
+        +Remove()
+    }
+    style SizeBoostEffect fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    
+    class EffectFactory {
+        -Dictionary~PowerUpType, IEffect~ _effectStrategies
+        +GetEffect()
+        +ApplyEffect()
+        +RemoveEffect()
+        +ResetAllEffects()
+    }
+    style EffectFactory fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
     
     %% ============================================
     %% UI SYSTEM
@@ -572,6 +671,7 @@ classDiagram
     MenuState --> GameContext
     PlayState --> GameContext
     PlayState --> InputHandler
+    PlayState --> ICollisionHandler
     GameOverState --> GameContext
     
     %% Game Context
@@ -641,18 +741,37 @@ classDiagram
     
     %% Factory Pattern
     IGameEntityFactory <|.. GameEntityFactory
+    GameEntityFactory --> IWallValidator
     
     GameEntityFactory ..> Ball
     GameEntityFactory ..> Paddle
     GameEntityFactory ..> Wall
     GameEntityFactory ..> Scoreboard
     
+    IWallValidator <|.. WallValidator
+    WallValidator --> Wall
+    
+    IPowerUpFactory <|.. PowerUpFactory
     PowerUpFactory ..> IPowerUp
     PowerUpFactory --> PowerUpType
     
+    %% Strategy Pattern for Effects
+    IEffect <|.. SpeedBoostEffect
+    IEffect <|.. SpeedReductionEffect
+    IEffect <|.. SizeBoostEffect
+    
+    EffectFactory o-- IEffect
     EffectFactory --> PowerUpType
     EffectFactory --> Ball
     EffectFactory --> Paddle
+    
+    SpeedBoostEffect --> Ball
+    SpeedReductionEffect --> Ball
+    SizeBoostEffect --> Paddle
+    
+    %% Renderer Abstraction
+    IRenderer <|.. SplashKitRenderer
+    RenderComponent --> IRenderer
     
     %% Power-Up System
     IPowerUp <|.. PowerUp
@@ -661,7 +780,7 @@ classDiagram
     PowerUp --> Ball
     
     PowerUpManager o-- IPowerUp
-    PowerUpManager --> PowerUpFactory
+    PowerUpManager --> IPowerUpFactory
     PowerUpManager --> Ball
     PowerUpManager --> SoundManager
     PowerUpManager --> ActiveEffectManager
@@ -674,6 +793,8 @@ classDiagram
     ActiveEffect --> PowerUpType
     
     %% Services
+    ICollisionHandler <|.. CollisionHandler
+    
     CollisionHandler --> Ball
     CollisionHandler --> Paddle
     CollisionHandler --> Wall
@@ -689,6 +810,7 @@ classDiagram
     UIRenderer --> Difficulty
     UIRenderer --> Scoreboard
 ```
+
 
 ## Mô tả các Design Pattern được sử dụng
 
@@ -718,26 +840,78 @@ classDiagram
 - Hỗ trợ Undo/Redo và command queuing
 
 ### 6. **Factory Pattern** - Entity Creation
-- **IGameEntityFactory**: Interface cho factory
+- **IGameEntityFactory**: Interface cho entity factory với **IWallValidator** dependency injection
 - **GameEntityFactory**: Tạo các game entities (Ball, Paddle, Wall, Scoreboard)
-- Chịu trách nhiệm tạo đối tượng game, không quản lý effects
+- **IWallValidator**: Interface cho validation logic (Dependency Inversion Principle)
+- **WallValidator**: Implementation của wall validation (tách khỏi Wall entity)
+- **IPowerUpFactory**: Interface cho power-up creation
+- **PowerUpFactory**: Instance-based factory tạo power-up collectibles
 
-### 7. **Effect System** - Power-Up Management (Tách riêng khỏi Factory)
-- **PowerUpFactory**: Tạo power-up collectibles
-- **EffectFactory**: Áp dụng effects trực tiếp lên entities
+### 7. **Dependency Injection Pattern** - Service Layer
+- **ICollisionHandler**: Interface cho collision detection system
+- **CollisionHandler**: Instance-based collision handler với constructor injection
+  - Dependencies: `SoundManager`, `PowerUpManager`
+  - Được initialize trong `PlayState.Enter()` khi dependencies available
+- **IPowerUpFactory**: Interface được inject vào `PowerUpManager`
+- **IWallValidator**: Interface được inject vào `GameEntityFactory`
+- **IRenderer**: Interface được inject vào `RenderComponent` (Adapter Pattern)
+
+### 8. **Strategy Pattern** - Effect System
+- **IEffect**: Interface cho effect strategies
+- **SpeedBoostEffect**, **SpeedReductionEffect**, **SizeBoostEffect**: Concrete strategies
+- **EffectFactory**: Context class sử dụng Dictionary<PowerUpType, IEffect> để map strategies
+  - Loại bỏ switch statements, tuân thủ Open/Closed Principle
+  - Dễ dàng mở rộng với effects mới mà không cần sửa code hiện tại
 - **ActiveEffectManager**: Quản lý lifecycle và duration của effects
-- **PowerUpManager**: Quản lý spawning, collision và lifecycle của power-ups
-- Hệ thống effects độc lập, không nằm trong Factory Pattern
 
-### 8. **Strategy Pattern** (Implicit) - Collision Handling
-- CollisionHandler xử lý collision với các strategies khác nhau
+### 9. **Adapter Pattern** - Rendering Abstraction
+- **IRenderer**: Interface decoupling game entities khỏi SplashKit
+- **SplashKitRenderer**: Adapter adapts SplashKit API sang IRenderer interface
+- **RenderComponent**: Sử dụng IRenderer thay vì direct SplashKit calls
+  - Cho phép thay đổi rendering engine mà không ảnh hưởng entities
+  - Dễ dàng testing với mock renderer
+
+### 10. **Immutable Value Objects** - Vector2D
+- **Vector2D**: Immutable readonly struct (không phải class)
+  - Properties: `X`, `Y` với `init` accessors
+  - Tất cả operations return new instances (Add, Subtract, Multiply, Normalize)
+  - Thread-safe, prevents accidental mutations
+  - Operator overloads (`+`, `-`, `*`) cho natural syntax
+  - Value semantics - copied by value, không phải by reference
+
+### 11. **Encapsulation & Access Control**
+- **Paddle**: 
+  - `X` - private set (immutable từ bên ngoài)
+  - `Y`, `Speed`, `Color`, `Height` - internal set (Commands và Effects có thể modify)
+- **Ball**:
+  - `X`, `Y` - readonly (không thể set)
+  - `Color` - internal set (Effects có thể modify)
+
+### 12. **SOLID Principles Applied**
+- **Single Responsibility**: 
+  - WallValidator tách khỏi Wall entity
+  - Effect strategies tách thành separate classes
+- **Open/Closed**: 
+  - Strategy Pattern cho Effects - open for extension, closed for modification
+  - Extension through interfaces
+- **Liskov Substitution**: 
+  - IEffect strategies có thể swap với nhau
+  - IRenderer implementations interchangeable
+- **Interface Segregation**: 
+  - Focused interfaces (IWallValidator, IEffect, IRenderer)
+- **Dependency Inversion**: 
+  - High-level modules depend on abstractions (ICollisionHandler, IPowerUpFactory, IRenderer, IEffect)
 
 ## Cấu trúc chính
 
 1. **Core Layer**: GameManager, StateMachine, States
 2. **Entity Layer**: Ball, Paddle, Wall với Component Pattern
-3. **Effects Layer**: PowerUp system, Effect managers (tách riêng)
-4. **Factory Layer**: Entity creation only (không bao gồm effects)
-5. **Service Layer**: SoundManager, InputHandler, CollisionHandler
-6. **Observer Layer**: Score tracking và notification
-7. **UI Layer**: GameUI, UIRenderer với state management
+3. **Value Objects**: Vector2D immutable readonly struct
+4. **Effects Layer**: Strategy Pattern (IEffect strategies), PowerUp system, Effect managers
+5. **Factory Layer**: Entity creation với Dependency Injection (IWallValidator, IPowerUpFactory)
+6. **Service Layer**: SoundManager, InputHandler, ICollisionHandler, IRenderer (Dependency Injection)
+7. **Observer Layer**: Score tracking và notification
+8. **UI Layer**: GameUI, UIRenderer với state management
+9. **Validation Layer**: IWallValidator, WallValidator (Single Responsibility)
+10. **Rendering Layer**: IRenderer abstraction, SplashKitRenderer adapter
+

@@ -22,18 +22,23 @@ namespace PongGame.Entities
         private readonly Random _random = new Random();
         private float _baseSpeed;
         private Vector2D _velocity;
+        private float _speed;
 
-        // Public properties for external access
-        public float X { get => _transform.X; }
-        public float Y { get => _transform.Y; }
-        public int Size { get => (int)_transform.Width; }
+        // Public properties for external access - read-only where possible
+        public float X { get => _transform.X; }  // ✅ Read-only
+        public float Y { get => _transform.Y; }  // ✅ Read-only
+        public int Size { get => (int)_transform.Width; }  // ✅ Read-only
         public Color Color 
         { 
             get => _render.Color;
-            set => _render.Color = value;
+            internal set => _render.Color = value;  // ✅ Internal - only for effects
         }
-        public Vector2D Velocity { get => _velocity; }
-        public float Speed { get; private set; }
+        public Vector2D Velocity { get => _velocity; }  // ✅ Read-only
+        public float Speed 
+        { 
+            get => _speed;
+            private set => _speed = value;  // ✅ Private setter
+        }
 
         // Backward compatibility methods
         public float GetX() => _transform.X;
@@ -83,10 +88,10 @@ namespace PongGame.Entities
 
         public void Bounce(Vector2D surfaceNormal)
         {
-            Vector2D incidentDirection = _velocity.Copy();
+            Vector2D incidentDirection = _velocity;
             float dotProduct = incidentDirection.DotProduct(surfaceNormal);
-            Vector2D reflection = surfaceNormal.Copy().Multiply(2 * dotProduct);
-            _velocity.Subtract(reflection);
+            Vector2D reflection = surfaceNormal.Multiply(2 * dotProduct);
+            _velocity = _velocity.Subtract(reflection);  // Immutable: assign new vector
         }
 
         public void ResetPosition()
@@ -103,7 +108,7 @@ namespace PongGame.Entities
 
         public void Accelerate(float ax, float ay)
         {
-            _velocity.Add(new Vector2D(ax, ay));
+            _velocity = _velocity.Add(new Vector2D(ax, ay));  // Immutable: assign new vector
         }
 
         /// <summary>
@@ -111,7 +116,7 @@ namespace PongGame.Entities
         /// </summary>
         public void LimitSpeed(float maxSpeed)
         {
-            _velocity.Limit(maxSpeed);
+            _velocity = _velocity.Limit(maxSpeed);  // Immutable: assign new vector
         }
 
         /// <summary>
@@ -140,8 +145,11 @@ namespace PongGame.Entities
             float magnitude = _velocity.Magnitude;
             if (magnitude > 0)
             {
-                _velocity.X = (_velocity.X / magnitude) * Speed;
-                _velocity.Y = (_velocity.Y / magnitude) * Speed;
+                // Immutable: create new vector with normalized components
+                _velocity = new Vector2D(
+                    (_velocity.X / magnitude) * Speed,
+                    (_velocity.Y / magnitude) * Speed
+                );
             }
         }
 

@@ -5,13 +5,14 @@ namespace PongGame.Effects
     /// <summary>
     /// Factory for creating power-up items
     /// Simplified - no need for subclasses
+    /// Converted from static to instance-based for better OOP design
     /// </summary>
-    public class PowerUpFactory
+    public class PowerUpFactory : IPowerUpFactory
     {
         /// <summary>
         /// Create a power-up based on type with appropriate color
         /// </summary>
-        public static IPowerUp CreatePowerUp(PowerUpType type, float x, float y)
+        public IPowerUp CreatePowerUp(PowerUpType type, float x, float y)
         {
             Color color = GetColorForType(type);
             return new PowerUp(type, x, y, color);
@@ -20,7 +21,7 @@ namespace PongGame.Effects
         /// <summary>
         /// Get the display color for each power-up type
         /// </summary>
-        private static Color GetColorForType(PowerUpType type)
+        private Color GetColorForType(PowerUpType type)
         {
             switch (type)
             {

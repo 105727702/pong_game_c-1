@@ -81,24 +81,6 @@ namespace PongGame.Entities
         }
 
         /// <summary>
-        /// Check if the new wall position is valid (doesn't overlap with existing walls)
-        /// </summary>
-        public static bool IsValidPosition(float newX, float newY, List<Wall> existingWalls, int minDistance)
-        {
-            foreach (Wall wall in existingWalls)
-            {
-                if (newX < wall.X + wall.Width + minDistance &&
-                    newX + WALL_WIDTH + minDistance > wall.X &&
-                    newY < wall.Y + wall.Height + minDistance &&
-                    newY + WALL_HEIGHT + minDistance > wall.Y)
-                {
-                    return false; // Overlapping or too close
-                }
-            }
-            return true; // Valid position
-        }
-
-        /// <summary>
         /// Get the rectangle bounds of the wall for collision detection
         /// </summary>
         public Rectangle GetBounds()

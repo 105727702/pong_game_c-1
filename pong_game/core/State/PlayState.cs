@@ -7,10 +7,12 @@ namespace PongGame.Core.State
     /// <summary>
     /// Play state - handles active gameplay
     /// Uses Observer Pattern for score management
+    /// Uses instance-based CollisionHandler (Dependency Injection)
     /// </summary>
     public class PlayState : IGameState
     {
         private readonly GameContext _context;
+        private ICollisionHandler? _collisionHandler;
         private InputHandler? _inputHandler;
         private const int WINDOW_WIDTH = 1200;
         private const int WINDOW_HEIGHT = 800;
@@ -25,6 +27,9 @@ namespace PongGame.Core.State
         {
             // Initialize InputHandler with Command Pattern
             _inputHandler = new InputHandler(_context.LeftPaddle, _context.RightPaddle);
+            
+            // Create collision handler with dependencies - MOVED HERE so services are available
+            _collisionHandler = new CollisionHandler(_context.SoundManager, _context.PowerUpManager);
             
             // Clear power-ups and effects using GameServices wrapper
             _context.Services.ClearAll();
@@ -51,16 +56,14 @@ namespace PongGame.Core.State
             // Update walls based on current score for progressive difficulty
             GameManager.Instance.UpdateWallsBasedOnScore(MIN_WALL_DISTANCE);
 
-            // Handle collisions using Factory pattern
-            CollisionHandler.HandleCollisions(
+            // Handle collisions using instance-based handler (OOP improvement)
+            _collisionHandler?.HandleCollisions(
                 _context.Ball, 
                 _context.LeftPaddle, 
                 _context.RightPaddle,
                 _context.Walls, 
                 WINDOW_WIDTH, 
-                WINDOW_HEIGHT, 
-                _context.SoundManager,
-                _context.PowerUpManager
+                WINDOW_HEIGHT
             );
 
             // Check power-up collisions
