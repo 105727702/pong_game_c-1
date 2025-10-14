@@ -142,35 +142,6 @@ namespace PongGame.Core
         }
 
         /// <summary>
-        /// Start the game
-        /// </summary>
-        public void StartGame()
-        {
-            if (Context != null)
-            {
-                Context.Scoreboard.Start();
-            }
-        }
-
-        /// <summary>
-        /// Restart the game with a specified number of walls and a minimum distance between them
-        /// </summary>
-        public void RestartGame(int numWalls, int minDistance)
-        {
-            if (Context != null)
-            {
-                Context.ScoreSubject.Reset();
-                Context.Ball.ResetPosition();
-                Context.LeftPaddle.ResetPosition();
-                Context.RightPaddle.ResetPosition();
-                
-                Context.Walls.Clear();
-                Context.Walls = _factory.CreateWalls(numWalls, minDistance, Context.WindowHeight);
-            }
-            GameOver = false;
-        }
-
-        /// <summary>
         /// Update walls based on current score for progressive difficulty
         /// </summary>
         public void UpdateWallsBasedOnScore(int minDistance)
