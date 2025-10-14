@@ -1,6 +1,6 @@
 using PongGame.Entities;
 
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Interface for power-up items

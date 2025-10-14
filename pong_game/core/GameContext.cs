@@ -1,6 +1,6 @@
 using PongGame.Entities;
 using PongGame.Services;
-using PongGame.Effects;
+using PongGame.Decorator;
 using System.Collections.Generic;
 
 namespace PongGame.Core

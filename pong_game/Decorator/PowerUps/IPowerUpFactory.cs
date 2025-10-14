@@ -1,4 +1,4 @@
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Interface for PowerUp factory

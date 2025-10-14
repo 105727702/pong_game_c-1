@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using PongGame.Entities;
 using SplashKitSDK;
 
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Manages active power-up effects with duration

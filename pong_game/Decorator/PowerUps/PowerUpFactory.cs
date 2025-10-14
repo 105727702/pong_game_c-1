@@ -1,6 +1,6 @@
 using SplashKitSDK;
 
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Factory for creating power-up items

@@ -2,7 +2,7 @@ using PongGame.Entities;
 using PongGame.Core.State;
 using PongGame.Services;
 using PongGame.UI;
-using PongGame.Effects;
+using PongGame.Decorator;
 using PongGame.Factories;
 using SplashKitSDK;
 
@@ -89,19 +89,31 @@ namespace PongGame.Core
             var powerUpManager = new PowerUpManager(WINDOW_WIDTH, WINDOW_HEIGHT);
             var activeEffectManager = new ActiveEffectManager(ball, leftPaddle, rightPaddle);
 
-            Context!.SoundManager = soundManager;
-            Context!.PowerUpManager = powerUpManager;
-            Context!.ActiveEffectManager = activeEffectManager;
+            if (Context != null)
+            {
+                Context.Services.SoundManager = soundManager;
+                Context.Services.PowerUpManager = powerUpManager;
+                Context.Services.ActiveEffectManager = activeEffectManager;
+            }
 
             // Initialize ScoreSubject dependencies
-            Context.InitializeScoreSubject();
+            if (Context != null)
+            {
+                Context.InitializeScoreSubject();
+            }
 
             // Generate initial walls using Factory Pattern
-            Context.Walls = _factory.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT);
+            if (Context != null)
+            {
+                Context.Walls = _factory.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT);
+            }
 
             // Set initial state
             _gameStarted = false;
-            _gameUI.CurrentState = GameState.MainMenu;
+            if (_gameUI != null)
+            {
+                _gameUI.CurrentState = GameState.MainMenu;
+            }
         }
 
         /// <summary>
@@ -134,7 +146,10 @@ namespace PongGame.Core
         /// </summary>
         public void StartGame()
         {
-            Context?.Scoreboard.Start();
+            if (Context != null)
+            {
+                Context.Scoreboard.Start();
+            }
         }
 
         /// <summary>
@@ -142,13 +157,13 @@ namespace PongGame.Core
         /// </summary>
         public void RestartGame(int numWalls, int minDistance)
         {
-            Context?.ScoreSubject.Reset();
-            Context?.Ball.ResetPosition();
-            Context?.LeftPaddle.ResetPosition();
-            Context?.RightPaddle.ResetPosition();
-            
             if (Context != null)
             {
+                Context.ScoreSubject.Reset();
+                Context.Ball.ResetPosition();
+                Context.LeftPaddle.ResetPosition();
+                Context.RightPaddle.ResetPosition();
+                
                 Context.Walls.Clear();
                 Context.Walls = _factory.CreateWalls(numWalls, minDistance, Context.WindowHeight);
             }
@@ -177,7 +192,11 @@ namespace PongGame.Core
         /// </summary>
         public void Update(float deltaTime)
         {
-            StateMachine?.Update(deltaTime);
+            if (StateMachine != null) 
+            {
+                StateMachine.Update(deltaTime);
+            }
+            // StateMachine?.Update(deltaTime);
 
             // Sync UI state with game state when game over occurs
             if (_gameStarted && GameOver && _gameUI != null)
@@ -198,9 +217,12 @@ namespace PongGame.Core
             HandleMenuInput();
 
             // Delegate gameplay input to current state
-            if (_gameStarted && _gameUI?.CurrentState == GameState.Playing)
+            if (_gameStarted && _gameUI != null && _gameUI.CurrentState == GameState.Playing)
             {
-                PlayState?.HandleInput();
+                if (PlayState != null)
+                {
+                    PlayState.HandleInput();
+                }
             }
         }
 
@@ -220,14 +242,20 @@ namespace PongGame.Core
                     {
                         // Start new game from menu
                         float ballSpeed = GetBallSpeedFromDifficulty();
-                        MenuState?.StartNewGame(ballSpeed);
+                        if (MenuState != null)
+                        {
+                            MenuState.StartNewGame(ballSpeed);
+                        }
                         _gameUI.CurrentState = GameState.Playing;
                         _gameStarted = true;
                     }
                     else if (_gameUI.CurrentState == GameState.GameOver)
                     {
                         // Restart game from game over
-                        GameOverState?.RestartGame();
+                        if (GameOverState != null)
+                        {
+                            GameOverState.RestartGame();
+                        }
                         _gameUI.CurrentState = GameState.Playing;
                         _gameStarted = true;
                     }
@@ -285,7 +313,10 @@ namespace PongGame.Core
             }
 
             // Draw power-ups
-            Context.PowerUpManager?.Draw();
+            if (Context.PowerUpManager != null)
+            {
+                Context.PowerUpManager.Draw();
+            }
         }
 
         /// <summary>
@@ -293,7 +324,10 @@ namespace PongGame.Core
         /// </summary>
         public void ChangeState(string stateName)
         {
-            StateMachine?.ChangeState(stateName);
+            if (StateMachine != null)
+            {
+                StateMachine.ChangeState(stateName);
+            }
         }
     }
 }

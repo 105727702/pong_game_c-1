@@ -27,14 +27,20 @@ namespace PongGame.Core
                 return;
             }
 
-            _currentState?.Exit();
+            if (_currentState != null)
+            {
+                _currentState.Exit();
+            }
             _currentState = _states[stateName];
             _currentState.Enter();
         }
 
         public void Update(float deltaTime)
         {
-            _currentState?.Update(deltaTime);
+            if (_currentState != null)
+            {
+                _currentState.Update(deltaTime);
+            }
         }
 
         public IGameState? GetCurrentState()

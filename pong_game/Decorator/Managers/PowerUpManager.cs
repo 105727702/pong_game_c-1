@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using PongGame.Entities;
 using PongGame.Services;
 
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Manages power-up spawning, collision detection, and effects
@@ -17,7 +17,7 @@ namespace PongGame.Effects
         private readonly int _windowWidth;
         private readonly int _windowHeight;
         private readonly IPowerUpFactory _powerUpFactory;
-        private const int MAX_POWERUPS = 3; // Maximum number of power-ups on screen
+        private const int MAX_POWERUPS = 5; // Maximum number of power-ups on screen
         private const double POWERUP_LIFETIME = 8.0; // Power-ups disappear after 8 seconds
 
         public PowerUpManager(int windowWidth, int windowHeight, IPowerUpFactory? powerUpFactory = null)
@@ -51,7 +51,10 @@ namespace PongGame.Effects
             IPowerUp powerUp = _powerUpFactory.CreatePowerUp(randomType, x, y);
             _activePowerUps.Add(powerUp);
 
-            soundManager?.PlayEffect(SoundType.PotionEffect);
+            if (soundManager != null)
+            {
+                soundManager.PlayEffect(SoundType.PotionEffect);
+            }
         }
 
         /// <summary>
@@ -111,7 +114,10 @@ namespace PongGame.Effects
             if (activeEffectManager != null)
             {
                 activeEffectManager.ApplyEffect(powerUp.Type, duration: 5.0);
-                soundManager?.PlayEffect(SoundType.PotionEffect);
+                if (soundManager != null)
+                {
+                    soundManager.PlayEffect(SoundType.PotionEffect);
+                }
             }
         }
 

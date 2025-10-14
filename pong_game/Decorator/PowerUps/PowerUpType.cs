@@ -1,4 +1,4 @@
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Enum for different types of power-ups

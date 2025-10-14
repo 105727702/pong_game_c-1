@@ -2,7 +2,7 @@ using PongGame.Entities;
 using SplashKitSDK;
 using System;
 
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Concrete power-up implementation
@@ -36,7 +36,7 @@ namespace PongGame.Effects
         {
             // Add pulsing effect based on remaining lifetime
             double timeRemaining = GetRemainingLifetime();
-            if (timeRemaining < 3.0)
+            if (timeRemaining < 5.0)
             {
                 // Blink faster when about to expire
                 double blinkSpeed = timeRemaining < 1.5 ? 5.0 : 3.0;

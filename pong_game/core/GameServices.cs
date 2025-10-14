@@ -1,5 +1,5 @@
 using PongGame.Services;
-using PongGame.Effects;
+using PongGame.Decorator;
 
 namespace PongGame.Core
 {
@@ -26,8 +26,14 @@ namespace PongGame.Core
         /// </summary>
         public void ClearAll()
         {
-            PowerUpManager?.Clear();
-            ActiveEffectManager?.ClearAllEffects();
+            if (PowerUpManager != null)
+            {
+                PowerUpManager.Clear();
+            }
+            if (ActiveEffectManager != null)
+            {
+                ActiveEffectManager.ClearAllEffects();
+            }
         }
     }
 }

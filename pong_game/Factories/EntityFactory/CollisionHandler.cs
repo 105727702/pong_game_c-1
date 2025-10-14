@@ -1,9 +1,9 @@
 using SplashKitSDK;
 using System.Collections.Generic;
 using PongGame.Entities;
-using PongGame.Effects;
+using PongGame.Decorator;
 using PongGame.Services;
-using Vector2D = PongGame.Entities.Vector2D; // ✅ Alias to avoid ambiguity
+using Vector2D = PongGame.Entities.Vector2D; 
 
 namespace PongGame.Factories
 {
@@ -100,13 +100,19 @@ namespace PongGame.Factories
             {
                 ball.SetY(0);
                 ball.Bounce(new Vector2D(0, 1)); // Reflection along the Y axis
-                _soundManager?.PlayEffect(Services.SoundType.WallHit);
+                if (_soundManager != null)
+                {
+                    _soundManager.PlayEffect(Services.SoundType.WallHit);
+                }
             }
             else if (ball.Y + ball.Size >= windowHeight)
             {
                 ball.SetY(windowHeight - ball.Size);
                 ball.Bounce(new Vector2D(0, -1));
-                _soundManager?.PlayEffect(Services.SoundType.WallHit);
+                if (_soundManager != null)
+                {
+                    _soundManager.PlayEffect(Services.SoundType.WallHit);
+                }
             }
 
             // Collisions with paddles
@@ -115,7 +121,10 @@ namespace PongGame.Factories
                 ResolveCollision(ball, leftPaddle.GetBounds(), new Vector2D(1, 0));
                 ball.Accelerate(leftPaddle.Speed * 0.1f, 0);
                 ball.LimitSpeed(20);
-                _soundManager?.PlayEffect(Services.SoundType.PaddleHit);
+                if (_soundManager != null)
+                {
+                    _soundManager.PlayEffect(Services.SoundType.PaddleHit);
+                }
                 
                 // 20% chance to spawn power-up when hitting paddle
                 if (_powerUpManager != null && _random.NextDouble() < 0.2)
@@ -128,7 +137,10 @@ namespace PongGame.Factories
                 ResolveCollision(ball, rightPaddle.GetBounds(), new Vector2D(-1, 0));
                 ball.Accelerate(-rightPaddle.Speed * 0.1f, 0);
                 ball.LimitSpeed(20);
-                _soundManager?.PlayEffect(Services.SoundType.PaddleHit);
+                if (_soundManager != null)
+                {
+                    _soundManager.PlayEffect(Services.SoundType.PaddleHit);
+                }
                 
                 // 20% chance to spawn power-up when hitting paddle
                 if (_powerUpManager != null && _random.NextDouble() < 0.2)
@@ -144,7 +156,10 @@ namespace PongGame.Factories
                 if (CheckCollision(ball.GetBounds(), wall.GetBounds()))
                 {
                     ResolveCollision(ball, wall.GetBounds());
-                    _soundManager?.PlayEffect(Services.SoundType.BallHitWall);
+                    if (_soundManager != null)
+                    {
+                        _soundManager.PlayEffect(Services.SoundType.BallHitWall);
+                    }
                     
                     // 70% chance to spawn 1-2 power-ups when hitting wall
                     if (_powerUpManager != null && _random.NextDouble() < 0.7)

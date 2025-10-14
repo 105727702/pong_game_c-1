@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using PongGame.Entities;
 using SplashKitSDK;
 
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Strategy Pattern - Factory that creates and manages effect strategies

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using PongGame.Observers;
 using PongGame.Services;
-using PongGame.Effects;
+using PongGame.Decorator;
 
 namespace PongGame.Entities
 {
@@ -98,12 +98,18 @@ namespace PongGame.Entities
             // Left boundary - behind left paddle (x=30, width=20)
             if (_ball.X < 30)
             {
-                _soundManager?.PlayEffect(SoundType.BallOut);
+                if (_soundManager != null)
+                {
+                    _soundManager.PlayEffect(SoundType.BallOut);
+                }
                 RightPoint();
                 _ball.ResetPosition();
                 
                 // Clear all active effects when ball goes out
-                _activeEffectManager?.ClearAllEffects();
+                if (_activeEffectManager != null)
+                {
+                    _activeEffectManager.ClearAllEffects();
+                }
 
                 if (RightScore >= WINNING_SCORE)
                 {
@@ -114,12 +120,18 @@ namespace PongGame.Entities
             // Right boundary - based on actual display area (after x=1200)
             else if (_ball.X > 1180)
             {
-                _soundManager?.PlayEffect(SoundType.BallOut);
+                if (_soundManager != null)
+                {
+                    _soundManager.PlayEffect(SoundType.BallOut);
+                }
                 LeftPoint();
                 _ball.ResetPosition();
                 
                 // Clear all active effects when ball goes out
-                _activeEffectManager?.ClearAllEffects();
+                if (_activeEffectManager != null)
+                {
+                    _activeEffectManager.ClearAllEffects();
+                }
 
                 if (LeftScore >= WINNING_SCORE)
                 {
@@ -136,8 +148,11 @@ namespace PongGame.Entities
         /// </summary>
         public void HandleGameOver(int winner)
         {
-            _soundManager?.StopMusic();
-            _soundManager?.PlayMusic(SoundType.GameOverMusic);
+            if (_soundManager != null)
+            {
+                _soundManager.StopMusic();
+                _soundManager.PlayMusic(SoundType.GameOverMusic);
+            }
         }
 
         public Scoreboard GetScoreboard()

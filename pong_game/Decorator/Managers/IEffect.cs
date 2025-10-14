@@ -1,6 +1,6 @@
 using PongGame.Entities;
 
-namespace PongGame.Effects
+namespace PongGame.Decorator
 {
     /// <summary>
     /// Strategy Pattern - Interface for power-up effects

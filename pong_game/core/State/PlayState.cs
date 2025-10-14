@@ -1,5 +1,5 @@
 using PongGame.Services;
-using PongGame.Effects;
+using PongGame.Decorator;
 using PongGame.Factories;
 
 namespace PongGame.Core.State
@@ -48,23 +48,32 @@ namespace PongGame.Core.State
             }
 
             // Update power-ups (remove expired ones)
-            _context.PowerUpManager?.Update();
+            if (_context.PowerUpManager != null)
+            {
+                _context.PowerUpManager.Update();
+            }
 
             // Update active effects (remove expired ones and restore state)
-            _context.ActiveEffectManager?.Update();
+            if (_context.ActiveEffectManager != null)
+            {
+                _context.ActiveEffectManager.Update();
+            }
 
             // Update walls based on current score for progressive difficulty
             GameManager.Instance.UpdateWallsBasedOnScore(MIN_WALL_DISTANCE);
 
             // Handle collisions using instance-based handler (OOP improvement)
-            _collisionHandler?.HandleCollisions(
-                _context.Ball, 
-                _context.LeftPaddle, 
-                _context.RightPaddle,
-                _context.Walls, 
-                WINDOW_WIDTH, 
-                WINDOW_HEIGHT
-            );
+            if (_collisionHandler != null)
+            {
+                _collisionHandler.HandleCollisions(
+                    _context.Ball, 
+                    _context.LeftPaddle, 
+                    _context.RightPaddle,
+                    _context.Walls, 
+                    WINDOW_WIDTH, 
+                    WINDOW_HEIGHT
+                );
+            }
 
             // Check power-up collisions
             if (_context.PowerUpManager != null)
