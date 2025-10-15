@@ -1,4 +1,5 @@
 using PongGame.Entities;
+using PongGame.Models;
 using System.Collections.Generic;
 
 namespace PongGame.Factories

@@ -812,6 +812,24 @@ classDiagram
 ```
 
 
+## 📊 Mermaid Diagram Legend
+
+### **Relationship Types:**
+- `-->` : Association/Dependency (uses, accesses)
+- `<|--` : Inheritance (class extends)
+- `<|..` : Implementation (implements interface)
+- `o--` : Composition (has-a, owns)
+- `..>` : Creation (creates/instantiates)
+
+### **Color Coding:**
+- 🔵 **Blue** (#e1f5ff) : Interfaces
+- 🟢 **Green** (#e8f5e9) : Concrete implementations
+- 🟠 **Orange** (#fff4e1) : Abstract classes
+- 🟡 **Yellow** (#fff3e0) : Value objects (immutable)
+- 🔷 **Light Blue** (#e3f2fd) : Model objects (state)
+
+---
+
 ## Mô tả các Design Pattern được sử dụng
 
 ### 1. **Singleton Pattern** - GameManager
@@ -904,14 +922,73 @@ classDiagram
 
 ## Cấu trúc chính
 
-1. **Core Layer**: GameManager, StateMachine, States
-2. **Entity Layer**: Ball, Paddle, Wall với Component Pattern
-3. **Value Objects**: Vector2D immutable readonly struct
-4. **Effects Layer**: Strategy Pattern (IEffect strategies), PowerUp system, Effect managers
-5. **Factory Layer**: Entity creation với Dependency Injection (IWallValidator, IPowerUpFactory)
-6. **Service Layer**: SoundManager, InputHandler, ICollisionHandler, IRenderer (Dependency Injection)
-7. **Observer Layer**: Score tracking và notification
-8. **UI Layer**: GameUI, UIRenderer với state management
-9. **Validation Layer**: IWallValidator, WallValidator (Single Responsibility)
-10. **Rendering Layer**: IRenderer abstraction, SplashKitRenderer adapter
+### **Phân loại theo Architecture Layers:**
+
+1. **Core Layer**: GameManager (Singleton), StateMachine, States (Menu, Play, GameOver)
+2. **Entity Layer**: Ball, Paddle, Wall - Game entities với Component Pattern
+3. **Value Objects Layer**: Vector2D - Immutable readonly struct (NOT an entity)
+4. **Model Layer**: Scoreboard - Game state model (NOT an entity)
+5. **Effects Layer**: Strategy Pattern (IEffect strategies), PowerUp system, Effect managers
+6. **Factory Layer**: Entity creation với Dependency Injection (IWallValidator, IPowerUpFactory)
+7. **Service Layer**: SoundManager, InputHandler, ICollisionHandler, IRenderer (Dependency Injection)
+8. **Observer Layer**: ScoreSubject, Score tracking và notification system
+9. **UI Layer**: GameUI, UIRenderer với state management
+10. **Validation Layer**: IWallValidator, WallValidator (Single Responsibility)
+11. **Rendering Layer**: IRenderer abstraction, SplashKitRenderer adapter
+
+### **Folder Structure:**
+
+```
+pong_game/
+├── Entities/           ✅ Game Entities ONLY
+│   ├── Ball.cs        (inherits GameObject)
+│   ├── Paddle.cs      (inherits GameObject)
+│   └── Wall.cs        (inherits GameObject)
+│
+├── ValueObjects/       ✅ Immutable Value Objects
+│   └── Vector2D.cs    (readonly struct - NOT an entity)
+│
+├── Models/            ✅ Game State Models
+│   └── Scoreboard.cs  (state model - NOT an entity)
+│
+├── Components/        ✅ Component Pattern
+│   ├── GameObject.cs
+│   └── GameComponents.cs (Transform, Movement, Render, Collision)
+│
+├── Core/              ✅ Game Management
+│   ├── GameManager.cs (Singleton)
+│   ├── StateMachine.cs
+│   └── State/ (Menu, Play, GameOver)
+│
+├── Observers/         ✅ Observer Pattern
+│   ├── IObserver.cs
+│   ├── ScoreSubject.cs
+│   └── ScoreObservers.cs
+│
+├── Factories/         ✅ Factory Pattern
+├── Services/          ✅ Services Layer
+├── Decorator/         ✅ PowerUp & Effect System
+└── UI/                ✅ User Interface
+```
+
+### **Key Distinctions:**
+
+**Game Entities** (in `Entities/` folder):
+- ✅ Inherit từ `GameObject`
+- ✅ Có visual representation
+- ✅ Có position trong game world
+- ✅ Có `Draw()` method
+- ✅ Examples: Ball, Paddle, Wall, PowerUp
+
+**Value Objects** (in `ValueObjects/` folder):
+- ❌ NOT entities
+- ✅ Immutable data structures
+- ✅ No identity, compared by value
+- ✅ Examples: Vector2D (position, velocity, direction)
+
+**Model Objects** (in `Models/` folder):
+- ❌ NOT entities
+- ✅ Manage game state/data
+- ✅ No visual representation
+- ✅ Examples: Scoreboard (scores, game state)
 

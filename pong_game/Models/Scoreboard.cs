@@ -1,7 +1,9 @@
-namespace PongGame.Entities
+namespace PongGame.Models
 {
     /// <summary>
-    /// This class is responsible for keeping track of the scores and game state
+    /// MODEL OBJECT - Represents game state and score tracking
+    /// Not a game entity - has no visual representation or physics
+    /// Used by Observer Pattern (Subject) and displayed by UI
     /// </summary>
     public class Scoreboard
     {

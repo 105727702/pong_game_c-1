@@ -1,7 +1,7 @@
 using SplashKitSDK;
 using System.Collections.Generic;
 using PongGame.Entities;
-using Vector2D = PongGame.Entities.Vector2D; // ✅ Alias to avoid ambiguity
+using Vector2D = PongGame.ValueObjects.Vector2D;
 
 namespace PongGame.Factories
 {

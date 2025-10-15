@@ -2,6 +2,7 @@ using System;
 using SplashKitSDK;
 using PongGame.Services;
 using PongGame.Components;
+using Vector2D = PongGame.ValueObjects.Vector2D;
 
 namespace PongGame.Entities
 {

@@ -1,4 +1,5 @@
 using PongGame.Entities;
+using PongGame.Models;
 using PongGame.Core.State;
 using PongGame.Services;
 using PongGame.UI;

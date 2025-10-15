@@ -1,4 +1,6 @@
 using PongGame.Entities;
+using PongGame.Models;
+using PongGame.Observers;
 using PongGame.Services;
 using PongGame.Decorator;
 using System.Collections.Generic;
@@ -73,7 +75,8 @@ namespace PongGame.Core
             ScoreSubject.InjectDependencies(
                 Entities.Ball, 
                 Services.SoundManager, 
-                Services.ActiveEffectManager
+                Services.ActiveEffectManager,
+                Services.PowerUpManager
             );
         }
     }

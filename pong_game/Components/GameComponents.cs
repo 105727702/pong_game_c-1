@@ -1,5 +1,5 @@
 using SplashKitSDK;
-using PongGame.Entities;
+using Vector2D = PongGame.ValueObjects.Vector2D;
 using PongGame.Services;
 
 namespace PongGame.Components
@@ -39,13 +39,20 @@ namespace PongGame.Components
     public class MovementComponent : IComponent
     {
         private readonly TransformComponent _transform;
-        public PongGame.Entities.Vector2D Velocity { get; set; }
+        public Vector2D Velocity { get; set; }
         public float Speed { get; set; }
 
         public MovementComponent(TransformComponent transform, float speed)
         {
             _transform = transform;
-            Velocity = new PongGame.Entities.Vector2D(0, 0);
+            Velocity = new Vector2D(0, 0);
+            Speed = speed;
+        }
+
+        public MovementComponent(TransformComponent transform, Vector2D velocity, float speed)
+        {
+            _transform = transform;
+            Velocity = velocity;
             Speed = speed;
         }
 
@@ -57,7 +64,7 @@ namespace PongGame.Components
 
         public void SetVelocity(float x, float y)
         {
-            Velocity = new PongGame.Entities.Vector2D(x, y);
+            Velocity = new Vector2D(x, y);
         }
     }
 

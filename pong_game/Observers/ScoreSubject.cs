@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using PongGame.Entities;
+using PongGame.Models;
 using PongGame.Observers;
 using PongGame.Services;
 using PongGame.Decorator;
 
-namespace PongGame.Entities
+namespace PongGame.Observers
 {
     /// <summary>
     /// Scoreboard with Observer Pattern - notifies observers when score changes
@@ -21,6 +23,7 @@ namespace PongGame.Entities
         private Ball? _ball;
         private SoundManager? _soundManager;
         private ActiveEffectManager? _activeEffectManager;
+        private PowerUpManager? _powerUpManager;
 
         public int LeftScore => _scoreboard.LeftScore;
         public int RightScore => _scoreboard.RightScore;
@@ -35,11 +38,12 @@ namespace PongGame.Entities
         /// Inject dependencies for score management
         /// Called during GameContext initialization
         /// </summary>
-        public void InjectDependencies(Ball ball, SoundManager? soundManager, ActiveEffectManager? activeEffectManager = null)
+        public void InjectDependencies(Ball ball, SoundManager? soundManager, ActiveEffectManager? activeEffectManager = null, PowerUpManager? powerUpManager = null)
         {
             _ball = ball;
             _soundManager = soundManager;
             _activeEffectManager = activeEffectManager;
+            _powerUpManager = powerUpManager;
         }
 
         public void Attach(IObserver observer)
@@ -104,11 +108,17 @@ namespace PongGame.Entities
                 }
                 RightPoint();
                 _ball.ResetPosition();
-                
+
                 // Clear all active effects when ball goes out
                 if (_activeEffectManager != null)
                 {
                     _activeEffectManager.ClearAllEffects();
+                }
+
+                // Clear all spawned power-ups when ball goes out
+                if (_powerUpManager != null)
+                {
+                    _powerUpManager.Clear();
                 }
 
                 if (RightScore >= WINNING_SCORE)
@@ -126,11 +136,17 @@ namespace PongGame.Entities
                 }
                 LeftPoint();
                 _ball.ResetPosition();
-                
+
                 // Clear all active effects when ball goes out
                 if (_activeEffectManager != null)
                 {
                     _activeEffectManager.ClearAllEffects();
+                }
+                
+                // Clear all spawned power-ups when ball goes out
+                if (_powerUpManager != null)
+                {
+                    _powerUpManager.Clear();
                 }
 
                 if (LeftScore >= WINNING_SCORE)

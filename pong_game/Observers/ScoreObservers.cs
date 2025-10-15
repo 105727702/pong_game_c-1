@@ -1,6 +1,5 @@
 using System;
 using SplashKitSDK;
-using PongGame.Entities;
 
 namespace PongGame.Observers
 {

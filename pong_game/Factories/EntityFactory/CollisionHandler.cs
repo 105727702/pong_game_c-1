@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using PongGame.Entities;
 using PongGame.Decorator;
 using PongGame.Services;
-using Vector2D = PongGame.Entities.Vector2D; 
+using Vector2D = PongGame.ValueObjects.Vector2D; 
 
 namespace PongGame.Factories
 {
@@ -115,37 +115,41 @@ namespace PongGame.Factories
                 }
             }
 
+            bool powerUpSpawned = false; // ✅ Track if power-up already spawned this frame
+
             // Collisions with paddles
             if (CheckCollision(ball.GetBounds(), leftPaddle.GetBounds()))
             {
                 ResolveCollision(ball, leftPaddle.GetBounds(), new Vector2D(1, 0));
-                ball.Accelerate(leftPaddle.Speed * 0.1f, 0);
+                ball.Accelerate(leftPaddle.Speed * 0.2f, 0);
                 ball.LimitSpeed(20);
                 if (_soundManager != null)
                 {
                     _soundManager.PlayEffect(Services.SoundType.PaddleHit);
                 }
                 
-                // 20% chance to spawn power-up when hitting paddle
-                if (_powerUpManager != null && _random.NextDouble() < 0.2)
+                // 20% chance to spawn power-up when hitting paddle (only once per frame)
+                if (!powerUpSpawned && _powerUpManager != null && _random.NextDouble() < 0.2)
                 {
                     _powerUpManager.SpawnRandomPowerUp(_soundManager);
+                    powerUpSpawned = true; 
                 }
             }
             else if (CheckCollision(ball.GetBounds(), rightPaddle.GetBounds()))
             {
                 ResolveCollision(ball, rightPaddle.GetBounds(), new Vector2D(-1, 0));
-                ball.Accelerate(-rightPaddle.Speed * 0.1f, 0);
+                ball.Accelerate(-rightPaddle.Speed * 0.2f, 0);
                 ball.LimitSpeed(20);
                 if (_soundManager != null)
                 {
                     _soundManager.PlayEffect(Services.SoundType.PaddleHit);
                 }
                 
-                // 20% chance to spawn power-up when hitting paddle
-                if (_powerUpManager != null && _random.NextDouble() < 0.2)
+                // 20% chance to spawn power-up when hitting paddle (only once per frame)
+                if (!powerUpSpawned && _powerUpManager != null && _random.NextDouble() < 0.2)
                 {
                     _powerUpManager.SpawnRandomPowerUp(_soundManager);
+                    powerUpSpawned = true; // ✅ Mark as spawned
                 }
             }
 

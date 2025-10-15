@@ -1,11 +1,12 @@
 using System;
 
-namespace PongGame.Entities
+namespace PongGame.ValueObjects
 {
     /// <summary>
     /// Immutable readonly struct for 2D vectors
     /// Follows value semantics - all operations return new instances
     /// Thread-safe and prevents accidental mutations
+    /// VALUE OBJECT Pattern - represents a mathematical concept with no identity
     /// </summary>
     public readonly struct Vector2D
     {

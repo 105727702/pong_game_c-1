@@ -1,6 +1,6 @@
 using System;
 using SplashKitSDK;
-using PongGame.Entities;
+using PongGame.Models;
 
 namespace PongGame.UI
 {

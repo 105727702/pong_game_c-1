@@ -1,5 +1,3 @@
-using PongGame.Entities;
-
 namespace PongGame.Observers
 {
     /// <summary>
