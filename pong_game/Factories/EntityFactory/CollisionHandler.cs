@@ -118,9 +118,9 @@ namespace PongGame.Factories
             bool powerUpSpawned = false; // ✅ Track if power-up already spawned this frame
 
             // Collisions with paddles
-            if (CheckCollision(ball.GetBounds(), leftPaddle.GetBounds()))
+            if (CheckCollision(ball.CreateRectangle(), leftPaddle.CreateRectangle()))
             {
-                ResolveCollision(ball, leftPaddle.GetBounds(), new Vector2D(1, 0));
+                ResolveCollision(ball, leftPaddle.CreateRectangle(), new Vector2D(1, 0));
                 ball.Accelerate(leftPaddle.Speed * 0.2f, 0);
                 ball.LimitSpeed(20);
                 if (_soundManager != null)
@@ -135,9 +135,9 @@ namespace PongGame.Factories
                     powerUpSpawned = true; 
                 }
             }
-            else if (CheckCollision(ball.GetBounds(), rightPaddle.GetBounds()))
+            else if (CheckCollision(ball.CreateRectangle(), rightPaddle.CreateRectangle()))
             {
-                ResolveCollision(ball, rightPaddle.GetBounds(), new Vector2D(-1, 0));
+                ResolveCollision(ball, rightPaddle.CreateRectangle(), new Vector2D(-1, 0));
                 ball.Accelerate(-rightPaddle.Speed * 0.2f, 0);
                 ball.LimitSpeed(20);
                 if (_soundManager != null)
@@ -157,9 +157,9 @@ namespace PongGame.Factories
             foreach (Wall wall in walls)
             {
                 wall.Move();
-                if (CheckCollision(ball.GetBounds(), wall.GetBounds()))
+                if (CheckCollision(ball.CreateRectangle(), wall.CreateRectangle()))
                 {
-                    ResolveCollision(ball, wall.GetBounds());
+                    ResolveCollision(ball, wall.CreateRectangle());
                     if (_soundManager != null)
                     {
                         _soundManager.PlayEffect(Services.SoundType.BallHitWall);

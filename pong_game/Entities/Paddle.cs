@@ -109,9 +109,9 @@ namespace PongGame.Entities
         /// <summary>
         /// Get the rectangle bounds of the paddle for collision detection
         /// </summary>
-        public Rectangle GetBounds()
+        public Rectangle CreateRectangle()
         {
-            return _transform.GetBounds();
+            return _transform.CreateRectangle();
         }
 
         /// <summary>

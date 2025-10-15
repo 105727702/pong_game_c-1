@@ -26,19 +26,19 @@ namespace PongGame.Entities
         private float _speed;
 
         // Public properties for external access - read-only where possible
-        public float X { get => _transform.X; }  // ✅ Read-only
-        public float Y { get => _transform.Y; }  // ✅ Read-only
-        public int Size { get => (int)_transform.Width; }  // ✅ Read-only
+        public float X { get => _transform.X; }  
+        public float Y { get => _transform.Y; }  
+        public int Size { get => (int)_transform.Width; }  
         public Color Color 
         { 
             get => _render.Color;
-            internal set => _render.Color = value;  // ✅ Internal - only for effects
+            internal set => _render.Color = value;  
         }
-        public Vector2D Velocity { get => _velocity; }  // ✅ Read-only
+        public Vector2D Velocity { get => _velocity; }  
         public float Speed 
         { 
             get => _speed;
-            private set => _speed = value;  // ✅ Private setter
+            private set => _speed = value;  
         }
 
         // Backward compatibility methods
@@ -157,9 +157,9 @@ namespace PongGame.Entities
         /// <summary>
         /// Get the rectangle bounds of the ball for collision detection
         /// </summary>
-        public Rectangle GetBounds()
+        public Rectangle CreateRectangle()
         {
-            return _transform.GetBounds();
+            return _transform.CreateRectangle();
         }
 
         /// <summary>

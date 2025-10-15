@@ -22,7 +22,7 @@ namespace PongGame.Components
             Height = height;
         }
 
-        public Rectangle GetBounds()
+        public Rectangle CreateRectangle()
         {
             return SplashKit.RectangleFrom(X, Y, Width, Height);
         }
@@ -130,14 +130,14 @@ namespace PongGame.Components
             // Collision detection is handled externally
         }
 
-        public Rectangle GetBounds()
+        public Rectangle CreateRectangle()
         {
-            return _transform.GetBounds();
+            return _transform.CreateRectangle();
         }
 
         public bool CheckCollision(CollisionComponent other)
         {
-            return SplashKit.RectanglesIntersect(GetBounds(), other.GetBounds());
+            return SplashKit.RectanglesIntersect(CreateRectangle(), other.CreateRectangle());
         }
     }
 }
