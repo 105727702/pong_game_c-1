@@ -6,7 +6,7 @@ namespace PongGame.Services
     /// SplashKit implementation of IRenderer
     /// Adapter Pattern - adapts SplashKit rendering API to our IRenderer interface
     /// </summary>
-    public class SplashKitRenderer : IRenderer
+    public class SplashKitRenderer
     {
         public void DrawCircle(Color color, float centerX, float centerY, float radius)
         {

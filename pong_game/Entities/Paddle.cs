@@ -24,7 +24,7 @@ namespace PongGame.Entities
         public float Speed 
         { 
             get => _speed;
-            internal set => _speed = value; // ✅ Internal setter - for effects and commands
+            set => _speed = value;
         }
         public float StartX { get; private set; }
         public float StartY { get; private set; }
@@ -33,27 +33,27 @@ namespace PongGame.Entities
         public float X 
         { 
             get => _transform.X;
-            private set => _transform.X = value; // ✅ Private setter
+            private set => _transform.X = value;
         }
         public float Y 
         { 
             get => _transform.Y;
-            internal set => _transform.Y = value; // ✅ Internal - for commands
+             set => _transform.Y = value; 
         }
         public int Width 
         { 
             get => (int)_transform.Width;
-            private set => _transform.Width = value; // ✅ Private setter
+            private set => _transform.Width = value; 
         }
         public int Height 
         { 
             get => (int)_transform.Height;
-            internal set => _transform.Height = value; // ✅ Internal - only for effects
+            set => _transform.Height = value;
         }
         public Color Color 
         { 
             get => _render.Color;
-            internal set => _render.Color = value; // ✅ Internal - for effects
+            set => _render.Color = value; 
         }
 
         public Paddle(float x, float y, int windowHeight)
@@ -91,13 +91,13 @@ namespace PongGame.Entities
 
         public void ResetSpeed()
         {
-            Speed = BASE_SPEED; // ✅ Use private setter through this
+            Speed = BASE_SPEED; 
         }
 
         private void IncreaseSpeed()
         {
             if (Speed < MAX_SPEED)
-                Speed += FORCE; // ✅ Use private setter through this
+                Speed += FORCE; 
         }
 
         public void ResetPosition()

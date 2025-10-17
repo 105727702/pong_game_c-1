@@ -12,17 +12,17 @@ namespace PongGame.Decorator
     /// </summary>
     public class PowerUpManager
     {
-        private readonly List<IPowerUp> _activePowerUps;
+        private readonly List<PowerUp> _activePowerUps;
         private readonly Random _random;
         private readonly int _windowWidth;
         private readonly int _windowHeight;
-        private readonly IPowerUpFactory _powerUpFactory;
+        private readonly PowerUpFactory _powerUpFactory;
         private const int MAX_POWERUPS = 5; // Maximum number of power-ups on screen
         private const double POWERUP_LIFETIME = 8.0; // Power-ups disappear after 8 seconds
 
-        public PowerUpManager(int windowWidth, int windowHeight, IPowerUpFactory? powerUpFactory = null)
+        public PowerUpManager(int windowWidth, int windowHeight, PowerUpFactory? powerUpFactory = null)
         {
-            _activePowerUps = new List<IPowerUp>();
+            _activePowerUps = new List<PowerUp>();
             _random = new Random();
             _windowWidth = windowWidth;
             _windowHeight = windowHeight;
@@ -48,7 +48,7 @@ namespace PongGame.Decorator
             PowerUpType[] types = { PowerUpType.SpeedBoost, PowerUpType.SpeedReduction, PowerUpType.SizeBoost };
             PowerUpType randomType = types[_random.Next(types.Length)];
 
-            IPowerUp powerUp = _powerUpFactory.CreatePowerUp(randomType, x, y);
+            PowerUp powerUp = _powerUpFactory.CreatePowerUp(randomType, x, y);
             _activePowerUps.Add(powerUp);
 
             if (soundManager != null)
@@ -92,13 +92,13 @@ namespace PongGame.Decorator
         /// Check collisions between ball and power-ups
         /// Returns the power-up that was collected, or null
         /// </summary>
-        public IPowerUp? CheckCollisions(Ball ball)
+        public PowerUp? CheckCollisions(Ball ball)
         {
             for (int i = _activePowerUps.Count - 1; i >= 0; i--)
             {
                 if (_activePowerUps[i].IsColliding(ball))
                 {
-                    IPowerUp collected = _activePowerUps[i];
+                    PowerUp? collected = _activePowerUps[i];
                     _activePowerUps.RemoveAt(i);
                     return collected;
                 }
@@ -109,7 +109,7 @@ namespace PongGame.Decorator
         /// <summary>
         /// Apply power-up effect based on type
         /// </summary>
-        public void ApplyPowerUpEffect(IPowerUp powerUp, ActiveEffectManager? activeEffectManager, SoundManager? soundManager = null)
+        public void ApplyPowerUpEffect(PowerUp powerUp, ActiveEffectManager? activeEffectManager, SoundManager? soundManager = null)
         {
             if (activeEffectManager != null)
             {

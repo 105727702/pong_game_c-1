@@ -5,14 +5,14 @@ using PongGame.Decorator;
 using PongGame.Services;
 using Vector2D = PongGame.ValueObjects.Vector2D; 
 
-namespace PongGame.Factories
+namespace PongGame.Services
 {
     /// <summary>
     /// Collision detection and handling implementation
     /// Converted from static class to instance-based for better OOP design
     /// Supports dependency injection and testability
     /// </summary>
-    public class CollisionHandler : ICollisionHandler
+    public class CollisionHandler
     {
         private readonly System.Random _random;
         private readonly Services.SoundManager? _soundManager;
@@ -115,7 +115,7 @@ namespace PongGame.Factories
                 }
             }
 
-            bool powerUpSpawned = false; // ✅ Track if power-up already spawned this frame
+            bool powerUpSpawned = false;
 
             // Collisions with paddles
             if (CheckCollision(ball.CreateRectangle(), leftPaddle.CreateRectangle()))

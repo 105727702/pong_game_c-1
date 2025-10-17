@@ -12,7 +12,7 @@ namespace PongGame.Core.State
     public class PlayState : IGameState
     {
         private readonly GameContext _context;
-        private ICollisionHandler? _collisionHandler;
+        private CollisionHandler? _collisionHandler;
         private InputHandler? _inputHandler;
         private const int WINDOW_WIDTH = 1200;
         private const int WINDOW_HEIGHT = 800;

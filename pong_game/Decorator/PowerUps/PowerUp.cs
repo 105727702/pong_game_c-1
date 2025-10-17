@@ -9,7 +9,7 @@ namespace PongGame.Decorator
     /// No need for subclasses - type is determined by constructor parameter
     /// Effects are applied through EffectFactory
     /// </summary>
-    public class PowerUp : IPowerUp
+    public class PowerUp
     {
         public float X { get; private set; }
         public float Y { get; private set; }

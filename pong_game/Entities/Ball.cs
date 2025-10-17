@@ -92,7 +92,7 @@ namespace PongGame.Entities
             Vector2D incidentDirection = _velocity;
             float dotProduct = incidentDirection.DotProduct(surfaceNormal);
             Vector2D reflection = surfaceNormal.Multiply(2 * dotProduct);
-            _velocity = _velocity.Subtract(reflection);  // Immutable: assign new vector
+            _velocity = _velocity.Subtract(reflection); 
         }
 
         public void ResetPosition()
@@ -109,7 +109,7 @@ namespace PongGame.Entities
 
         public void Accelerate(float ax, float ay)
         {
-            _velocity = _velocity.Add(new Vector2D(ax, ay));  // Immutable: assign new vector
+            _velocity = _velocity.Add(new Vector2D(ax, ay));  
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace PongGame.Entities
         /// </summary>
         public void LimitSpeed(float maxSpeed)
         {
-            _velocity = _velocity.Limit(maxSpeed);  // Immutable: assign new vector
+            _velocity = _velocity.Limit(maxSpeed); 
         }
 
         /// <summary>
@@ -146,7 +146,6 @@ namespace PongGame.Entities
             float magnitude = _velocity.Magnitude;
             if (magnitude > 0)
             {
-                // Immutable: create new vector with normalized components
                 _velocity = new Vector2D(
                     (_velocity.X / magnitude) * Speed,
                     (_velocity.Y / magnitude) * Speed

@@ -11,16 +11,9 @@ namespace PongGame.Factories
     /// Includes wall generation logic (previously in WallGenerator)
     /// Uses WallValidator for proper OOP design
     /// </summary>
-    public class GameEntityFactory : IGameEntityFactory
+    public class GameEntityFactory 
     {
         private readonly Random _random = new Random();
-        private readonly IWallValidator _wallValidator;
-
-        public GameEntityFactory(IWallValidator? wallValidator = null)
-        {
-            _wallValidator = wallValidator ?? new WallValidator(); // Default if not provided
-        }
-
         public Ball CreateBall(int windowWidth, int windowHeight)
         {
             return new Ball(windowWidth, windowHeight);

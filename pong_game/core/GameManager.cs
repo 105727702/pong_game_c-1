@@ -39,7 +39,7 @@ namespace PongGame.Core
         private bool _gameStarted;
 
         // Factory
-        private readonly IGameEntityFactory _factory;
+        private readonly GameEntityFactory _factory;
 
         // Private constructor for Singleton
         private GameManager()

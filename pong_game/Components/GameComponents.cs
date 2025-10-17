@@ -75,12 +75,12 @@ namespace PongGame.Components
     public class RenderComponent : IComponent
     {
         private readonly TransformComponent _transform;
-        private readonly IRenderer _renderer;
+        private readonly SplashKitRenderer _renderer;
         
         public Color Color { get; set; }
         public bool IsCircle { get; set; }
 
-        public RenderComponent(TransformComponent transform, Color color, bool isCircle = false, IRenderer? renderer = null)
+        public RenderComponent(TransformComponent transform, Color color, bool isCircle = false, SplashKitRenderer? renderer = null)
         {
             _transform = transform;
             Color = color;
