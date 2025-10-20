@@ -22,7 +22,6 @@ namespace PongGame.Entities
         private readonly int _windowHeight;
         private readonly Random _random = new Random();
         private float _baseSpeed;
-        private Vector2D _velocity;
         private float _speed;
 
         // Public properties for external access - read-only where possible
@@ -34,7 +33,7 @@ namespace PongGame.Entities
             get => _render.Color;
             internal set => _render.Color = value;  
         }
-        public Vector2D Velocity { get => _velocity; }  
+        public Vector2D Velocity { get => _movement.Velocity; }  
         public float Speed 
         { 
             get => _speed;
@@ -46,7 +45,7 @@ namespace PongGame.Entities
         public float GetY() => _transform.Y;
         public int GetSize() => (int)_transform.Width;
         public Color GetColor() => _render.Color;
-        public Vector2D GetVelocity() => _velocity;
+        public Vector2D GetVelocity() => _movement.Velocity;
         public float GetSpeed() => Speed;
         
         // Controlled setters
@@ -75,24 +74,18 @@ namespace PongGame.Entities
             AddComponent(_movement);
             AddComponent(_render);
             
-            // Initialize velocity
-            _velocity = new Vector2D(4, 4);
-            Speed = _velocity.Magnitude;
+            // Initialize velocity in MovementComponent
+            _movement.Velocity = new Vector2D(4, 4);
+            Speed = _movement.Velocity.Magnitude;
             _baseSpeed = Speed;
-        }
-
-        public void Move()
-        {
-            _transform.X += _velocity.X;
-            _transform.Y += _velocity.Y;
         }
 
         public void Bounce(Vector2D surfaceNormal)
         {
-            Vector2D incidentDirection = _velocity;
+            Vector2D incidentDirection = _movement.Velocity;
             float dotProduct = incidentDirection.DotProduct(surfaceNormal);
             Vector2D reflection = surfaceNormal.Multiply(2 * dotProduct);
-            _velocity = _velocity.Subtract(reflection); 
+            _movement.Velocity = _movement.Velocity.Subtract(reflection); 
         }
 
         public void ResetPosition()
@@ -102,14 +95,14 @@ namespace PongGame.Entities
             _transform.Y = _random.Next(100, _windowHeight - 100);
             
             int direction = _random.Next(0, 2) == 0 ? 1 : -1;
-            _velocity = new Vector2D(4 * direction, 4 * direction);
+            _movement.Velocity = new Vector2D(4 * direction, 4 * direction);
             Speed = _baseSpeed;
             NormalizeVelocity();
         }
 
         public void Accelerate(float ax, float ay)
         {
-            _velocity = _velocity.Add(new Vector2D(ax, ay));  
+            _movement.Velocity = _movement.Velocity.Add(new Vector2D(ax, ay));  
         }
 
         /// <summary>
@@ -117,7 +110,7 @@ namespace PongGame.Entities
         /// </summary>
         public void LimitSpeed(float maxSpeed)
         {
-            _velocity = _velocity.Limit(maxSpeed); 
+            _movement.Velocity = _movement.Velocity.Limit(maxSpeed); 
         }
 
         /// <summary>
@@ -143,12 +136,12 @@ namespace PongGame.Entities
         /// </summary>
         public void NormalizeVelocity()
         {
-            float magnitude = _velocity.Magnitude;
+            float magnitude = _movement.Velocity.Magnitude;
             if (magnitude > 0)
             {
-                _velocity = new Vector2D(
-                    (_velocity.X / magnitude) * Speed,
-                    (_velocity.Y / magnitude) * Speed
+                _movement.Velocity = new Vector2D(
+                    (_movement.Velocity.X / magnitude) * Speed,
+                    (_movement.Velocity.Y / magnitude) * Speed
                 );
             }
         }
@@ -166,7 +159,7 @@ namespace PongGame.Entities
         /// </summary>
         public override void Draw()
         {
-            _render.Draw();
+            _render.Update(0);
         }
     }
 }

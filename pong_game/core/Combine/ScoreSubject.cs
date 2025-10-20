@@ -3,9 +3,8 @@ using PongGame.Entities;
 using PongGame.Models;
 using PongGame.Observers;
 using PongGame.Services;
-using PongGame.Decorator;
 
-namespace PongGame.Observers
+namespace PongGame.Combine
 {
     /// <summary>
     /// Scoreboard with Observer Pattern - notifies observers when score changes
@@ -15,7 +14,7 @@ namespace PongGame.Observers
     /// </summary>
     public class ScoreSubject
     {
-        private readonly List<IObserver> _observers = new List<IObserver>();
+        private readonly List<UIScoreObserver> _observers = new List<UIScoreObserver>();
         private readonly Scoreboard _scoreboard;
         private const int WINNING_SCORE = 10;
 
@@ -46,7 +45,7 @@ namespace PongGame.Observers
             _powerUpManager = powerUpManager;
         }
 
-        public void Attach(IObserver observer)
+        public void Attach(UIScoreObserver observer)
         {
             if (!_observers.Contains(observer))
             {
@@ -54,41 +53,29 @@ namespace PongGame.Observers
             }
         }
 
-        public void Detach(IObserver observer)
+        public void Detach(UIScoreObserver observer)
         {
             _observers.Remove(observer);
-        }
-
-        public void Notify()
-        {
-            foreach (var observer in _observers)
-            {
-                observer.Update(this);
-            }
         }
 
         public void LeftPoint()
         {
             _scoreboard.LeftPoint();
-            Notify();
         }
 
         public void RightPoint()
         {
             _scoreboard.RightPoint();
-            Notify();
         }
 
         public void Start()
         {
             _scoreboard.Start();
-            Notify();
         }
 
         public void Reset()
         {
             _scoreboard.Reset();
-            Notify();
         }
 
         /// <summary>

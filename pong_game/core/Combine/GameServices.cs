@@ -1,24 +1,30 @@
 using PongGame.Services;
-using PongGame.Decorator;
 
-namespace PongGame.Core
+namespace PongGame.Combine
 {
     /// <summary>
     /// Container for all game services - improves GameContext organization
+    /// Manages all game services and their interactions
     /// </summary>
     public class GameServices
     {
         public SoundManager? SoundManager { get; set; }
         public PowerUpManager? PowerUpManager { get; set; }
         public ActiveEffectManager? ActiveEffectManager { get; set; }
+        public CollisionHandler? CollisionHandler { get; set; }
+        public InputHandler? InputHandler { get; set; }
 
         public GameServices(SoundManager? soundManager = null, 
             PowerUpManager? powerUpManager = null, 
-            ActiveEffectManager? activeEffectManager = null)
+            ActiveEffectManager? activeEffectManager = null,
+            CollisionHandler? collisionHandler = null,
+            InputHandler? inputHandler = null)
         {
             SoundManager = soundManager;
             PowerUpManager = powerUpManager;
             ActiveEffectManager = activeEffectManager;
+            CollisionHandler = collisionHandler;
+            InputHandler = inputHandler;
         }
 
         /// <summary>

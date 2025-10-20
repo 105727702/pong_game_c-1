@@ -9,9 +9,9 @@ namespace PongGame.Entities
     /// </summary>
     public class Paddle : GameObject
     {
-        private const float BASE_SPEED = 3.5f;
-        private const float MAX_SPEED = 6f;
-        private const float FORCE = 0.15f;
+        private const float BASE_SPEED = 1.5f;
+        private const float MAX_SPEED = 15.0f;
+        private const float FORCE = 1f;
 
         // Components
         private TransformComponent _transform;
@@ -38,7 +38,7 @@ namespace PongGame.Entities
         public float Y 
         { 
             get => _transform.Y;
-             set => _transform.Y = value; 
+            set => _transform.Y = value; 
         }
         public int Width 
         { 
@@ -119,7 +119,7 @@ namespace PongGame.Entities
         /// </summary>
         public override void Draw()
         {
-            _render.Draw();
+            _render.Update(0);
         }
     }
 }

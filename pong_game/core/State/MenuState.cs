@@ -21,9 +21,6 @@ namespace PongGame.Core.State
         {
             // Play menu music when entering menu
             _context.SoundManager?.PlayMusic(SoundType.MenuMusic);
-            
-            // Reset game over flag
-            GameManager.Instance.GameOver = false;
         }
 
         public void Update(float deltaTime)
@@ -50,9 +47,6 @@ namespace PongGame.Core.State
             _context.Walls.Clear();
             var factory = new PongGame.Factories.GameEntityFactory();
             _context.Walls = factory.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, _context.WindowHeight);
-            
-            // Reset game over flag
-            GameManager.Instance.GameOver = false;
             
             // Transition to Play state
             GameManager.Instance.ChangeState("Play");

@@ -29,7 +29,7 @@ namespace PongGame
                     // Delegate to GameManager
                     // GameManager uses State Pattern to handle different game states
                     // Input is handled using Command Pattern
-                    GameManager.Instance.HandleInput();
+                    GameManager.Instance.HandleMenuInput();
                     GameManager.Instance.Update(0.016f); // ~60 FPS
                     
                     SplashKit.ClearScreen(Color.Black);

@@ -29,7 +29,6 @@ namespace PongGame.Components
 
         public void Update(float deltaTime)
         {
-            // Transform doesn't need to update by default
         }
     }
 
@@ -46,13 +45,6 @@ namespace PongGame.Components
         {
             _transform = transform;
             Velocity = new Vector2D(0, 0);
-            Speed = speed;
-        }
-
-        public MovementComponent(TransformComponent transform, Vector2D velocity, float speed)
-        {
-            _transform = transform;
-            Velocity = velocity;
             Speed = speed;
         }
 
@@ -75,69 +67,38 @@ namespace PongGame.Components
     public class RenderComponent : IComponent
     {
         private readonly TransformComponent _transform;
-        private readonly SplashKitRenderer _renderer;
-        
         public Color Color { get; set; }
         public bool IsCircle { get; set; }
 
-        public RenderComponent(TransformComponent transform, Color color, bool isCircle = false, SplashKitRenderer? renderer = null)
+        public RenderComponent(TransformComponent transform, Color color, bool isCircle = false)
         {
             _transform = transform;
             Color = color;
             IsCircle = isCircle;
-            _renderer = renderer ?? new SplashKitRenderer(); // Default to SplashKit if not provided
         }
 
         public void Update(float deltaTime)
         {
-            // Render doesn't need update
-        }
-
-        public void Draw()
-        {
             if (IsCircle)
             {
-                _renderer.DrawCircle(Color, 
-                    _transform.X + _transform.Width / 2, 
-                    _transform.Y + _transform.Height / 2, 
+                SplashKit.DrawCircle(Color,
+                    _transform.X + _transform.Width / 2,
+                    _transform.Y + _transform.Height / 2,
+                    _transform.Width / 2);
+                SplashKit.FillCircle(Color,
+                    _transform.X + _transform.Width / 2,
+                    _transform.Y + _transform.Height / 2,
                     _transform.Width / 2);
             }
             else
             {
-                _renderer.DrawRectangle(Color, 
-                    _transform.X, _transform.Y, 
+                SplashKit.DrawRectangle(Color,
+                    _transform.X, _transform.Y,
+                    _transform.Width, _transform.Height);
+                SplashKit.FillRectangle(Color,
+                    _transform.X, _transform.Y,
                     _transform.Width, _transform.Height);
             }
-        }
-    }
-
-    /// <summary>
-    /// Collision component - handles collision detection
-    /// </summary>
-    public class CollisionComponent : IComponent
-    {
-        private readonly TransformComponent _transform;
-        public bool IsSolid { get; set; }
-
-        public CollisionComponent(TransformComponent transform, bool isSolid = true)
-        {
-            _transform = transform;
-            IsSolid = isSolid;
-        }
-
-        public void Update(float deltaTime)
-        {
-            // Collision detection is handled externally
-        }
-
-        public Rectangle CreateRectangle()
-        {
-            return _transform.CreateRectangle();
-        }
-
-        public bool CheckCollision(CollisionComponent other)
-        {
-            return SplashKit.RectanglesIntersect(CreateRectangle(), other.CreateRectangle());
         }
     }
 }

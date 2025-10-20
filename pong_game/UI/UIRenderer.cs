@@ -4,21 +4,6 @@ using PongGame.Models;
 
 namespace PongGame.UI
 {
-    public enum GameState
-    {
-        MainMenu,
-        DifficultyMenu,
-        Playing,
-        GameOver
-    }
-
-    public enum Difficulty
-    {
-        Easy = 0,
-        Medium = 1,
-        Hard = 2
-    }
-
     /// <summary>
     /// Handles UI rendering and menu interactions
     /// </summary>

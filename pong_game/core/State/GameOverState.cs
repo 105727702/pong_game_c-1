@@ -19,9 +19,6 @@ namespace PongGame.Core.State
         public void Enter()
         {
             // Game over music is already playing (started by ScoreManager.HandleGameOver)
-            // Set game over flag
-            GameManager.Instance.GameOver = true;
-            
             // Could add additional effects here like screen shake, final score calculation, etc.
         }
 
@@ -48,9 +45,6 @@ namespace PongGame.Core.State
             var factory = new PongGame.Factories.GameEntityFactory();
             _context.Walls = factory.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, _context.WindowHeight);
             
-            // Reset game over flag
-            GameManager.Instance.GameOver = false;
-            
             // Transition to Play state
             GameManager.Instance.ChangeState("Play");
         }
@@ -60,9 +54,6 @@ namespace PongGame.Core.State
         /// </summary>
         public void ReturnToMenu()
         {
-            // Reset game over flag
-            GameManager.Instance.GameOver = false;
-            
             // Transition to Menu state
             GameManager.Instance.ChangeState("Menu");
         }
@@ -71,9 +62,6 @@ namespace PongGame.Core.State
         {
             // Stop game over music when leaving this state (restarting or returning to menu)
             _context.Services.SoundManager?.StopMusic();
-            
-            // Reset game over flag when exiting
-            GameManager.Instance.GameOver = false;
         }
     }
 }

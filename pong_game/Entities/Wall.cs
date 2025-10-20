@@ -93,7 +93,7 @@ namespace PongGame.Entities
         /// </summary>
         public override void Draw()
         {
-            _render.Draw();
+            _render.Update(0);
         }
     }
 }

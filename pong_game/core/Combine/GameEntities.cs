@@ -1,7 +1,7 @@
 using PongGame.Entities;
 using System.Collections.Generic;
 
-namespace PongGame.Core
+namespace PongGame.Combine
 {
     /// <summary>
     /// Container for all game entities - improves GameContext organization

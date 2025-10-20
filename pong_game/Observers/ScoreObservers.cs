@@ -1,12 +1,13 @@
 using System;
 using SplashKitSDK;
+using PongGame.Combine;
 
 namespace PongGame.Observers
 {
     /// <summary>
     /// UI Observer - updates UI when score changes
     /// </summary>
-    public class UIScoreObserver : IObserver
+    public class UIScoreObserver
     {
         private int _leftScore;
         private int _rightScore;
@@ -33,17 +34,6 @@ namespace PongGame.Observers
 
             SplashKit.DrawText(leftScoreText, Color.White, "Arial", 24, 20, 20);
             SplashKit.DrawText(rightScoreText, Color.White, "Arial", 24, windowWidth - 120, 20);
-        }
-    }
-
-    /// <summary>
-    /// Console Observer - logs score changes to console
-    /// </summary>
-    public class ConsoleScoreObserver : IObserver
-    {
-        public void Update(ScoreSubject subject)
-        {
-            Console.WriteLine($"[Console Log] Score Update - Left: {subject.LeftScore}, Right: {subject.RightScore}");
         }
     }
 }

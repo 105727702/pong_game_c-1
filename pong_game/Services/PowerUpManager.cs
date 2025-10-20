@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using PongGame.Entities;
-using PongGame.Services;
+using PongGame.Decorator;
 
-namespace PongGame.Decorator
+namespace PongGame.Services
 {
     /// <summary>
     /// Manages power-up spawning, collision detection, and effects

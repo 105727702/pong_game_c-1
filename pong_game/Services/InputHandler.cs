@@ -2,7 +2,7 @@ using SplashKitSDK;
 using PongGame.Entities;
 using PongGame.Commands;
 
-namespace PongGame.Core
+namespace PongGame.Services
 {
     /// <summary>
     /// Handles input events for the game using Command Pattern
@@ -74,14 +74,6 @@ namespace PongGame.Core
             {
                 _stopRightPaddleCommand.Execute();
             }
-        }
-
-        /// <summary>
-        /// Update paddle movement based on currently pressed keys
-        /// </summary>
-        public void UpdatePaddleMovement()
-        {
-            HandleKeyInput();
         }
     }
 }

@@ -3,7 +3,6 @@ using PongGame.Models;
 using PongGame.Core.State;
 using PongGame.Services;
 using PongGame.UI;
-using PongGame.Decorator;
 using PongGame.Factories;
 using SplashKitSDK;
 
@@ -34,9 +33,6 @@ namespace PongGame.Core
 
         // UI
         private GameUI? _gameUI;
-
-        public bool GameOver { get; set; }
-        private bool _gameStarted;
 
         // Factory
         private readonly GameEntityFactory _factory;
@@ -89,32 +85,15 @@ namespace PongGame.Core
             var soundManager = new SoundManager();
             var powerUpManager = new PowerUpManager(WINDOW_WIDTH, WINDOW_HEIGHT);
             var activeEffectManager = new ActiveEffectManager(ball, leftPaddle, rightPaddle);
-
             if (Context != null)
             {
                 Context.Services.SoundManager = soundManager;
                 Context.Services.PowerUpManager = powerUpManager;
                 Context.Services.ActiveEffectManager = activeEffectManager;
-            }
-
-            // Initialize ScoreSubject dependencies
-            if (Context != null)
-            {
                 Context.InitializeScoreSubject();
-            }
-
-            // Generate initial walls using Factory Pattern
-            if (Context != null)
-            {
                 Context.Walls = _factory.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT);
             }
-
-            // Set initial state
-            _gameStarted = false;
-            if (_gameUI != null)
-            {
-                _gameUI.CurrentState = GameState.MainMenu;
-            }
+             _gameUI.CurrentState = GameState.MainMenu;
         }
 
         /// <summary>
@@ -138,8 +117,6 @@ namespace PongGame.Core
 
             // Start with menu state
             StateMachine.ChangeState("Menu");
-            
-            GameOver = false;
         }
 
         /// <summary>
@@ -171,44 +148,51 @@ namespace PongGame.Core
             // StateMachine?.Update(deltaTime);
 
             // Sync UI state with game state when game over occurs
-            if (_gameStarted && GameOver && _gameUI != null)
+            bool isGameOver = StateMachine?.GetCurrentState() == GameOverState;
+            if (isGameOver && _gameUI != null && _gameUI.CurrentState != GameState.GameOver)
             {
                 int winner = Context!.Scoreboard.LeftScore >= 1 ? 1 : 2;
                 _gameUI.Winner = winner;
                 _gameUI.CurrentState = GameState.GameOver;
-                _gameStarted = false;
             }
         }
-
-        /// <summary>
-        /// Handle user input
-        /// </summary>
-        public void HandleInput()
-        {
-            // Handle UI interactions (menu clicks)
-            HandleMenuInput();
-
-            // Delegate gameplay input to current state
-            if (_gameStarted && _gameUI != null && _gameUI.CurrentState == GameState.Playing)
-            {
-                if (PlayState != null)
-                {
-                    PlayState.HandleInput();
-                }
-            }
-        }
-
         /// <summary>
         /// Handle menu input
         /// </summary>
-        private void HandleMenuInput()
+        public void HandleMenuInput()
         {
             if (_gameUI == null) return;
 
             if (SplashKit.MouseClicked(MouseButton.LeftButton))
             {
                 Point2D mousePos = SplashKit.MousePosition();
-                if (_gameUI.HandleMouseClick((float)mousePos.X, (float)mousePos.Y))
+                
+                // Check if user clicked "Back to Menu" button from GameOver state
+                if (_gameUI.CurrentState == GameState.GameOver)
+                {
+                    // Store current state before HandleMouseClick changes it
+                    var stateBeforeClick = _gameUI.CurrentState;
+                    bool clickedPlayAgain = _gameUI.HandleMouseClick((float)mousePos.X, (float)mousePos.Y);
+                    
+                    if (clickedPlayAgain)
+                    {
+                        // Restart game from game over
+                        if (GameOverState != null)
+                        {
+                            GameOverState.RestartGame();
+                        }
+                        _gameUI.CurrentState = GameState.Playing;
+                    }
+                    else if (stateBeforeClick == GameState.GameOver && _gameUI.CurrentState == GameState.MainMenu)
+                    {
+                        // User clicked "Back to Menu" - return to menu
+                        if (GameOverState != null)
+                        {
+                            GameOverState.ReturnToMenu();
+                        }
+                    }
+                }
+                else if (_gameUI.HandleMouseClick((float)mousePos.X, (float)mousePos.Y))
                 {
                     if (_gameUI.CurrentState == GameState.MainMenu)
                     {
@@ -219,17 +203,6 @@ namespace PongGame.Core
                             MenuState.StartNewGame(ballSpeed);
                         }
                         _gameUI.CurrentState = GameState.Playing;
-                        _gameStarted = true;
-                    }
-                    else if (_gameUI.CurrentState == GameState.GameOver)
-                    {
-                        // Restart game from game over
-                        if (GameOverState != null)
-                        {
-                            GameOverState.RestartGame();
-                        }
-                        _gameUI.CurrentState = GameState.Playing;
-                        _gameStarted = true;
                     }
                 }
             }
@@ -262,7 +235,8 @@ namespace PongGame.Core
             _gameUI.Draw(Context.Scoreboard);
 
             // Render game objects only during active gameplay
-            if (_gameStarted && _gameUI.CurrentState == GameState.Playing)
+            bool isPlaying = StateMachine?.GetCurrentState() == PlayState;
+            if (isPlaying && _gameUI.CurrentState == GameState.Playing)
             {
                 RenderGameObjects();
             }

@@ -1,9 +1,8 @@
 using PongGame.Entities;
 using PongGame.Models;
-using PongGame.Observers;
 using PongGame.Services;
-using PongGame.Decorator;
 using System.Collections.Generic;
+using PongGame.Combine;
 
 namespace PongGame.Core
 {
