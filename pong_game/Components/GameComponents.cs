@@ -4,9 +4,6 @@ using PongGame.Services;
 
 namespace PongGame.Components
 {
-    /// <summary>
-    /// Transform component - handles position and size
-    /// </summary>
     public class TransformComponent : IComponent
     {
         public float X { get; set; }
@@ -32,9 +29,6 @@ namespace PongGame.Components
         }
     }
 
-    /// <summary>
-    /// Movement component - handles velocity and movement
-    /// </summary>
     public class MovementComponent : IComponent
     {
         private readonly TransformComponent _transform;
@@ -60,10 +54,6 @@ namespace PongGame.Components
         }
     }
 
-    /// <summary>
-    /// Render component - handles visual rendering
-    /// Uses IRenderer abstraction to decouple from SplashKit (Dependency Inversion)
-    /// </summary>
     public class RenderComponent : IComponent
     {
         private readonly TransformComponent _transform;

@@ -1,11 +1,7 @@
-using PongGame.Models;
+using PongGame.Entities;
 
 namespace PongGame.UI
 {
-    /// <summary>
-    /// Manages game UI elements and rendering
-    /// Delegates rendering to UIRenderer
-    /// </summary>
     public class GameUI
     {
         private readonly UIRenderer _uiRenderer;

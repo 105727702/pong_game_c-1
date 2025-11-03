@@ -2,9 +2,7 @@ using System.Collections.Generic;
 
 namespace PongGame.Core
 {
-    /// <summary>
-    /// State Machine to manage game states
-    /// </summary>
+
     public class StateMachine
     {
         private IGameState? _currentState;
@@ -22,11 +20,6 @@ namespace PongGame.Core
 
         public void ChangeState(string stateName)
         {
-            if (!_states.ContainsKey(stateName))
-            {
-                return;
-            }
-
             if (_currentState != null)
             {
                 _currentState.Exit();

@@ -2,10 +2,6 @@ using PongGame.Services;
 
 namespace PongGame.Combine
 {
-    /// <summary>
-    /// Container for all game services - improves GameContext organization
-    /// Manages all game services and their interactions
-    /// </summary>
     public class GameServices
     {
         public SoundManager? SoundManager { get; set; }
@@ -14,11 +10,13 @@ namespace PongGame.Combine
         public CollisionHandler? CollisionHandler { get; set; }
         public InputHandler? InputHandler { get; set; }
 
-        public GameServices(SoundManager? soundManager = null, 
-            PowerUpManager? powerUpManager = null, 
+        public GameServices(
+            SoundManager? soundManager = null,
+            PowerUpManager? powerUpManager = null,
             ActiveEffectManager? activeEffectManager = null,
             CollisionHandler? collisionHandler = null,
-            InputHandler? inputHandler = null)
+            InputHandler? inputHandler = null
+            )
         {
             SoundManager = soundManager;
             PowerUpManager = powerUpManager;
@@ -27,9 +25,6 @@ namespace PongGame.Combine
             InputHandler = inputHandler;
         }
 
-        /// <summary>
-        /// Clear all active effects and power-ups
-        /// </summary>
         public void ClearAll()
         {
             if (PowerUpManager != null)

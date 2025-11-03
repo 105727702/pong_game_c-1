@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 namespace PongGame.Combine
 {
-    /// <summary>
-    /// Container for all game entities - improves GameContext organization
-    /// </summary>
     public class GameEntities
     {
         public Ball Ball { get; set; }
@@ -20,10 +17,6 @@ namespace PongGame.Combine
             RightPaddle = rightPaddle;
             Walls = new List<Wall>();
         }
-
-        /// <summary>
-        /// Reset all entities to their starting positions
-        /// </summary>
         public void ResetPositions()
         {
             Ball.ResetPosition();

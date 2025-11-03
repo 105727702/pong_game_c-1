@@ -1,8 +1,5 @@
 namespace PongGame.Core
 {
-    /// <summary>
-    /// Interface for game states
-    /// </summary>
     public interface IGameState
     {
         void Enter();

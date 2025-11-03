@@ -1,24 +1,15 @@
 using System.Collections.Generic;
 using PongGame.Entities;
-using PongGame.Models;
-using PongGame.Observers;
 using PongGame.Services;
 
 namespace PongGame.Combine
 {
-    /// <summary>
-    /// Scoreboard with Observer Pattern - notifies observers when score changes
-    /// Integrates ScoreManager functionality (boundary checking and game over logic)
-    /// Improved with better dependency management
-    /// Note: ISubject interface removed as unnecessary abstraction (only one Subject in game)
-    /// </summary>
+
     public class ScoreSubject
     {
-        private readonly List<UIScoreObserver> _observers = new List<UIScoreObserver>();
         private readonly Scoreboard _scoreboard;
-        private const int WINNING_SCORE = 10;
+        private const int WINNING_SCORE = 1;
 
-        // Game context dependencies
         private Ball? _ball;
         private SoundManager? _soundManager;
         private ActiveEffectManager? _activeEffectManager;
@@ -33,29 +24,12 @@ namespace PongGame.Combine
             _scoreboard = scoreboard;
         }
 
-        /// <summary>
-        /// Inject dependencies for score management
-        /// Called during GameContext initialization
-        /// </summary>
         public void InjectDependencies(Ball ball, SoundManager? soundManager, ActiveEffectManager? activeEffectManager = null, PowerUpManager? powerUpManager = null)
         {
             _ball = ball;
             _soundManager = soundManager;
             _activeEffectManager = activeEffectManager;
             _powerUpManager = powerUpManager;
-        }
-
-        public void Attach(UIScoreObserver observer)
-        {
-            if (!_observers.Contains(observer))
-            {
-                _observers.Add(observer);
-            }
-        }
-
-        public void Detach(UIScoreObserver observer)
-        {
-            _observers.Remove(observer);
         }
 
         public void LeftPoint()
@@ -78,15 +52,10 @@ namespace PongGame.Combine
             _scoreboard.Reset();
         }
 
-        /// <summary>
-        /// Check if the ball is out of bounds and handle scoring
-        /// Returns: 0 = no winner, 1 = left player wins, 2 = right player wins
-        /// </summary>
         public int CheckBallOutOfBounds()
         {
             if (_ball == null) return 0;
 
-            // Left boundary - behind left paddle (x=30, width=20)
             if (_ball.X < 30)
             {
                 if (_soundManager != null)
@@ -96,13 +65,11 @@ namespace PongGame.Combine
                 RightPoint();
                 _ball.ResetPosition();
 
-                // Clear all active effects when ball goes out
                 if (_activeEffectManager != null)
                 {
                     _activeEffectManager.ClearAllEffects();
                 }
 
-                // Clear all spawned power-ups when ball goes out
                 if (_powerUpManager != null)
                 {
                     _powerUpManager.Clear();
@@ -111,10 +78,9 @@ namespace PongGame.Combine
                 if (RightScore >= WINNING_SCORE)
                 {
                     HandleGameOver(2);
-                    return 2; // Right player wins
+                    return 2; 
                 }
             }
-            // Right boundary - based on actual display area (after x=1200)
             else if (_ball.X > 1180)
             {
                 if (_soundManager != null)
@@ -124,13 +90,11 @@ namespace PongGame.Combine
                 LeftPoint();
                 _ball.ResetPosition();
 
-                // Clear all active effects when ball goes out
                 if (_activeEffectManager != null)
                 {
                     _activeEffectManager.ClearAllEffects();
                 }
                 
-                // Clear all spawned power-ups when ball goes out
                 if (_powerUpManager != null)
                 {
                     _powerUpManager.Clear();
@@ -139,16 +103,13 @@ namespace PongGame.Combine
                 if (LeftScore >= WINNING_SCORE)
                 {
                     HandleGameOver(1);
-                    return 1; // Left player wins
+                    return 1; 
                 }
             }
 
-            return 0; // No winner yet
+            return 0; 
         }
 
-        /// <summary>
-        /// Handle game over state
-        /// </summary>
         public void HandleGameOver(int winner)
         {
             if (_soundManager != null)

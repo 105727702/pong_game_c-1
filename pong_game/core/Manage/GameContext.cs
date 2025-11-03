@@ -1,41 +1,24 @@
 using PongGame.Entities;
-using PongGame.Models;
 using PongGame.Services;
 using System.Collections.Generic;
 using PongGame.Combine;
 
 namespace PongGame.Core
 {
-    /// <summary>
-    /// Context object containing all game objects and services
-    /// Simplified and organized with wrapper classes
-    /// Uses Observer Pattern for score management
-    /// </summary>
     public class GameContext
     {
-        // Organized game entities
         public GameEntities Entities { get; private set; }
         
-        // Organized game services
         public GameServices Services { get; private set; }
         
-        // Score management with Observer Pattern
         public ScoreSubject ScoreSubject { get; private set; }
-        
-        // Window configuration
+
         public int WindowWidth { get; set; }
         public int WindowHeight { get; set; }
 
-        // Backward compatibility properties
-        public Ball Ball => Entities.Ball;
-        public Paddle LeftPaddle => Entities.LeftPaddle;
-        public Paddle RightPaddle => Entities.RightPaddle;
-        public List<Wall> Walls 
-        { 
-            get => Entities.Walls;
-            set => Entities.Walls = value;
-        }
+        public Wall Wall { get; private set; } 
         public Scoreboard Scoreboard => ScoreSubject.GetScoreboard();
+
         public SoundManager? SoundManager 
         { 
             get => Services.SoundManager;
@@ -52,28 +35,23 @@ namespace PongGame.Core
             set => Services.ActiveEffectManager = value;
         }
 
-        public GameContext(Ball ball, Paddle leftPaddle, Paddle rightPaddle, 
+        public GameContext(Ball ball, Paddle leftPaddle, Paddle rightPaddle,
             Scoreboard scoreboard, int windowWidth, int windowHeight)
         {
-            // Initialize organized containers
             Entities = new GameEntities(ball, leftPaddle, rightPaddle);
             Services = new GameServices();
-            
-            // Create ScoreSubject with Observer Pattern
             ScoreSubject = new ScoreSubject(scoreboard);
-            
+            Wall = new Wall(0, 0, windowHeight);
+
             WindowWidth = windowWidth;
             WindowHeight = windowHeight;
         }
 
-        /// <summary>
-        /// Initialize score subject dependencies after services are set
-        /// </summary>
         public void InitializeScoreSubject()
         {
             ScoreSubject.InjectDependencies(
-                Entities.Ball, 
-                Services.SoundManager, 
+                Entities.Ball,
+                Services.SoundManager,
                 Services.ActiveEffectManager,
                 Services.PowerUpManager
             );

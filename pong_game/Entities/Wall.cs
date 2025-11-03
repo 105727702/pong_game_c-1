@@ -2,98 +2,112 @@ using SplashKitSDK;
 using System.Collections.Generic;
 using System;
 using PongGame.Components;
+using Vector2D = PongGame.ValueObjects.Vector2D;
 
 namespace PongGame.Entities
 {
-    /// <summary>
-    /// Wall entity using Component Pattern
-    /// Inherits from GameObject for consistent entity structure
-    /// </summary>
-    public class Wall : GameObject
+    public class Wall : GameObjectComponent
     {
         public const int WALL_WIDTH = 10;
         public const int WALL_HEIGHT = 100;
 
-        // Components
-        private TransformComponent _transform;
-        private MovementComponent _movement;
-        private RenderComponent _render;
-
-        // Wall-specific properties
         private readonly int _windowHeight;
         private readonly Random _random = new Random();
 
-        // Public properties for external access
-        public float X 
-        { 
-            get => _transform.X;
-            set => _transform.X = value;
-        }
-        public float Y 
-        { 
-            get => _transform.Y;
-            set => _transform.Y = value;
-        }
-        public int Width => WALL_WIDTH;
-        public int Height => WALL_HEIGHT;
-        public Color Color 
-        { 
-            get => _render.Color;
-            set => _render.Color = value;
-        }
-        public float YSpeed 
-        { 
-            get => _movement.Velocity.Y;
-            set => _movement.SetVelocity(0, value);
+        public new int Width => WALL_WIDTH;
+        public new int Height => WALL_HEIGHT;
+        
+        public float YSpeed
+        {
+            get => Velocity.Y;
+            set 
+            {
+                if (_movement != null)
+                    _movement.SetVelocity(0, value);
+            }
         }
 
         public Wall(float x, float y, int windowHeight, float speedMultiplier = 1.0f)
         {
             _windowHeight = windowHeight;
-            
-            // Initialize components
-            _transform = new TransformComponent(x, y, WALL_WIDTH, WALL_HEIGHT);
-            _movement = new MovementComponent(_transform, 0);
-            _render = new RenderComponent(_transform, Color.Gray, isCircle: false);
-            
-            // Add components to GameObject
-            AddComponent(_transform);
-            AddComponent(_movement);
-            AddComponent(_render);
-            
-            // Set initial speed
+
+            var transform = new TransformComponent(x, y, WALL_WIDTH, WALL_HEIGHT);
+            var movement = new MovementComponent(transform, 0);
+            var render = new RenderComponent(transform, Color.Gray, isCircle: false);
+
+            AddComponent(transform);
+            AddComponent(movement);
+            AddComponent(render);
+
             float baseSpeed = _random.Next(1, 2) * speedMultiplier;
             float speed = Math.Max(baseSpeed, 2.0f);
-            _movement.SetVelocity(0, speed);
+            YSpeed = speed;
         }
 
         public void Move()
         {
-            // Update position via component
             base.Update(0);
-            
-            // Bounce off boundaries
-            if (_transform.Y <= 0 || _transform.Y + Height >= _windowHeight)
+
+            if (Y <= 0 || Y + Height >= _windowHeight)
             {
-                var currentVelocity = _movement.Velocity;
-                _movement.SetVelocity(0, -currentVelocity.Y);
+                YSpeed = -Velocity.Y;
             }
         }
 
-        /// <summary>
-        /// Get the rectangle bounds of the wall for collision detection
-        /// </summary>
-        public Rectangle CreateRectangle()
+        public List<Wall> CreateWalls(int numWalls, int minDistance, int windowHeight)
         {
-            return _transform.CreateRectangle();
+            var newWalls = new List<Wall>();
+            var _random = new Random();
+
+            float speedMultiplier = 1.0f + (numWalls - 4) * 0.1f;
+
+            float playableStartX = 60f;
+            float playableEndX = 1140f;
+            float playableWidth = playableEndX - playableStartX;
+            float colWidth = playableWidth / numWalls;
+            var xPositions = new List<float>();
+
+            for (int i = 0; i < numWalls; i++)
+            {
+                float x = playableStartX + i * colWidth + colWidth / 2f;
+                xPositions.Add(x);
+            }
+
+            foreach (float x in xPositions)
+            {
+                int attempts = 0;
+                float y;
+
+                do
+                {
+                    y = _random.Next(80, windowHeight - Wall.WALL_HEIGHT - 80);
+                    attempts++;
+                } while (newWalls.Any(w => Math.Abs(w.Y - y) < minDistance) && attempts <= 100);
+
+                if (attempts <= 100)
+                {
+                    newWalls.Add(new Wall(x, y, windowHeight, speedMultiplier));
+                }
+            }
+
+            return newWalls;
         }
 
-        /// <summary>
-        /// Draw the wall - overrides GameObject.Draw()
-        /// </summary>
+        public int CalculateWallCount(int totalScore, int baseWalls = 4)
+        {
+            int additionalWalls = totalScore / 4;
+            return Math.Min(baseWalls + additionalWalls, 6);
+        }
+
+        public Rectangle CreateRectangle()
+        {
+            return _transform?.CreateRectangle() ?? new Rectangle();
+        }
+
         public override void Draw()
         {
-            _render.Update(0);
+            _render?.Update(0);
         }
     }
 }
+

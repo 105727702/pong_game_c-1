@@ -16,9 +16,6 @@ namespace PongGame.Services
         PotionEffect
     }
 
-    /// <summary>
-    /// Manages sound effects and background music for the game
-    /// </summary>
     public class SoundManager
     {
         private readonly Dictionary<SoundType, SoundEffect> _soundEffects;
@@ -34,7 +31,6 @@ namespace PongGame.Services
         {
             try
             {
-                // Try to load custom sound files if they exist, otherwise use default SplashKit sounds
                 LoadCustomSounds();
             }
             catch (Exception ex)
@@ -81,7 +77,6 @@ namespace PongGame.Services
                 {
                     SplashKit.PlaySoundEffect(_soundEffects[type]);
                 }
-                // SplashKit doesn't have system beep equivalent, so we skip fallback
             }
             catch (Exception ex)
             {
@@ -96,7 +91,6 @@ namespace PongGame.Services
                 StopMusic();
                 if (_soundEffects.ContainsKey(type))
                 {
-                    // For music, we'll treat it as a looping sound effect
                     SplashKit.PlaySoundEffect(_soundEffects[type]);
                 }
             }

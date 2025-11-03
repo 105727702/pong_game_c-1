@@ -1,12 +1,9 @@
 using System;
 using SplashKitSDK;
-using PongGame.Models;
+using PongGame.Entities;
 
 namespace PongGame.UI
 {
-    /// <summary>
-    /// Handles UI rendering and menu interactions
-    /// </summary>
     public class UIRenderer
     {
         private readonly int _windowWidth;
@@ -20,7 +17,6 @@ namespace PongGame.UI
         public Difficulty SelectedDifficulty { get; set; }
         public int Winner { get; set; }
 
-        // Button rectangles for click detection
         private Rectangle _startButtonRect;
         private Rectangle _difficultyButtonRect;
         private Rectangle _exitButtonRect;

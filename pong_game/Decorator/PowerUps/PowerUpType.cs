@@ -1,8 +1,5 @@
 namespace PongGame.Decorator
 {
-    /// <summary>
-    /// Enum for different types of power-ups
-    /// </summary>
     public enum PowerUpType
     {
         SpeedBoost,
