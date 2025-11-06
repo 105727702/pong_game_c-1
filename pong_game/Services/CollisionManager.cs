@@ -57,7 +57,7 @@ namespace PongGame.Services
 
         public void HandleCollisions(
             Ball ball, Paddle leftPaddle, Paddle rightPaddle, 
-            List<Wall> walls, int winW, int winH)
+            IReadOnlyList<Wall> walls, int winW, int winH)
         {
             if (ball.Y <= 0)
             {
@@ -91,7 +91,7 @@ namespace PongGame.Services
                     ball.Accelerate(bounceDir.X * speedDiff * 0.1f, 0);
                 }
                 
-                ball.LimitSpeed(10);
+                ball.LimitSpeed(5);
                 Play(SoundType.PaddleHit);
 
                 if (!spawned && _powerUpManager != null && _random.NextDouble() < 0.2)

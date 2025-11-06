@@ -8,24 +8,25 @@ namespace PongGame.Combine
     public class ScoreSubject
     {
         private readonly Scoreboard _scoreboard;
+        private readonly Ball _ball;
+        private readonly SoundManager? _soundManager;
+        private readonly ActiveEffectManager? _activeEffectManager;
+        private readonly PowerUpManager? _powerUpManager;
+        
         private const int WINNING_SCORE = 1;
-
-        private Ball? _ball;
-        private SoundManager? _soundManager;
-        private ActiveEffectManager? _activeEffectManager;
-        private PowerUpManager? _powerUpManager;
 
         public int LeftScore => _scoreboard.LeftScore;
         public int RightScore => _scoreboard.RightScore;
         public bool GameStarted => _scoreboard.GameStarted;
 
-        public ScoreSubject(Scoreboard scoreboard)
+        public ScoreSubject(
+            Scoreboard scoreboard, 
+            Ball ball, 
+            SoundManager? soundManager = null, 
+            ActiveEffectManager? activeEffectManager = null, 
+            PowerUpManager? powerUpManager = null)
         {
             _scoreboard = scoreboard;
-        }
-
-        public void InjectDependencies(Ball ball, SoundManager? soundManager, ActiveEffectManager? activeEffectManager = null, PowerUpManager? powerUpManager = null)
-        {
             _ball = ball;
             _soundManager = soundManager;
             _activeEffectManager = activeEffectManager;
@@ -54,26 +55,13 @@ namespace PongGame.Combine
 
         public int CheckBallOutOfBounds()
         {
-            if (_ball == null) return 0;
-
-            if (_ball.X < 30)
+            if (_ball.X < 20)
             {
-                if (_soundManager != null)
-                {
-                    _soundManager.PlayEffect(SoundType.BallOut);
-                }
+                _soundManager?.PlayEffect(SoundType.BallOut);
                 RightPoint();
                 _ball.ResetPosition();
-
-                if (_activeEffectManager != null)
-                {
-                    _activeEffectManager.ClearAllEffects();
-                }
-
-                if (_powerUpManager != null)
-                {
-                    _powerUpManager.Clear();
-                }
+                _activeEffectManager?.ClearAllEffects();
+                _powerUpManager?.Clear();
 
                 if (RightScore >= WINNING_SCORE)
                 {
@@ -83,22 +71,11 @@ namespace PongGame.Combine
             }
             else if (_ball.X > 1180)
             {
-                if (_soundManager != null)
-                {
-                    _soundManager.PlayEffect(SoundType.BallOut);
-                }
+                _soundManager?.PlayEffect(SoundType.BallOut);
                 LeftPoint();
                 _ball.ResetPosition();
-
-                if (_activeEffectManager != null)
-                {
-                    _activeEffectManager.ClearAllEffects();
-                }
-                
-                if (_powerUpManager != null)
-                {
-                    _powerUpManager.Clear();
-                }
+                _activeEffectManager?.ClearAllEffects();
+                _powerUpManager?.Clear();
 
                 if (LeftScore >= WINNING_SCORE)
                 {
@@ -112,11 +89,8 @@ namespace PongGame.Combine
 
         public void HandleGameOver(int winner)
         {
-            if (_soundManager != null)
-            {
-                _soundManager.StopMusic();
-                _soundManager.PlayMusic(SoundType.GameOverMusic);
-            }
+            _soundManager?.StopMusic();
+            _soundManager?.PlayMusic(SoundType.GameOverMusic);
         }
 
         public Scoreboard GetScoreboard()

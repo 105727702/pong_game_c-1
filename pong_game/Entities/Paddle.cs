@@ -1,5 +1,6 @@
 using SplashKitSDK;
 using PongGame.Components;
+using System;
 
 namespace PongGame.Entities
 {
@@ -7,24 +8,19 @@ namespace PongGame.Entities
     {
         private const float BASE_SPEED = 1.5f;
         private const float MAX_SPEED = 15.0f;
+        private const float MIN_SPEED = 0f;
         private const float FORCE = 1f;
 
         private readonly int _windowHeight;
         private float _speed;
 
-        public float Speed 
+        public new float Speed 
         { 
             get => _speed;
-            set => _speed = value;
+            private set => _speed = Math.Clamp(value, MIN_SPEED, MAX_SPEED);
         }
         public float StartX { get; private set; }
         public float StartY { get; private set; }
-
-        public new int Width 
-        { 
-            get => (int)base.Width;
-            private set => base.Width = value; 
-        }
         
         public new int Height 
         { 
@@ -62,11 +58,6 @@ namespace PongGame.Entities
             IncreaseSpeed();
         }
 
-        public void ResetSpeed()
-        {
-            Speed = BASE_SPEED; 
-        }
-
         private void IncreaseSpeed()
         {
             if (Speed < MAX_SPEED)
@@ -77,6 +68,11 @@ namespace PongGame.Entities
         {
             X = StartX;
             Y = StartY;
+        }
+        
+        internal void SetY(float y)
+        {
+            Y = y;
         }
  
         public Rectangle CreateRectangle()

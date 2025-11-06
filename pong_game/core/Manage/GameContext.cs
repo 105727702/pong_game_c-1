@@ -8,53 +8,27 @@ namespace PongGame.Core
     public class GameContext
     {
         public GameEntities Entities { get; private set; }
-        
         public GameServices Services { get; private set; }
-        
         public ScoreSubject ScoreSubject { get; private set; }
-
-        public int WindowWidth { get; set; }
-        public int WindowHeight { get; set; }
-
-        public Wall Wall { get; private set; } 
+        
         public Scoreboard Scoreboard => ScoreSubject.GetScoreboard();
+        public SoundManager? SoundManager => Services.SoundManager;
+        public PowerUpManager? PowerUpManager => Services.PowerUpManager;
+        public ActiveEffectManager? ActiveEffectManager => Services.ActiveEffectManager;
 
-        public SoundManager? SoundManager 
-        { 
-            get => Services.SoundManager;
-            set => Services.SoundManager = value;
-        }
-        public PowerUpManager? PowerUpManager 
-        { 
-            get => Services.PowerUpManager;
-            set => Services.PowerUpManager = value;
-        }
-        public ActiveEffectManager? ActiveEffectManager 
-        { 
-            get => Services.ActiveEffectManager;
-            set => Services.ActiveEffectManager = value;
-        }
-
-        public GameContext(Ball ball, Paddle leftPaddle, Paddle rightPaddle,
-            Scoreboard scoreboard, int windowWidth, int windowHeight)
+        public GameContext(
+            Ball ball, 
+            Paddle leftPaddle, 
+            Paddle rightPaddle,
+            Wall wallTemplate,
+            Scoreboard scoreboard, 
+            SoundManager? soundManager = null,
+            PowerUpManager? powerUpManager = null,
+            ActiveEffectManager? activeEffectManager = null)
         {
-            Entities = new GameEntities(ball, leftPaddle, rightPaddle);
-            Services = new GameServices();
-            ScoreSubject = new ScoreSubject(scoreboard);
-            Wall = new Wall(0, 0, windowHeight);
-
-            WindowWidth = windowWidth;
-            WindowHeight = windowHeight;
-        }
-
-        public void InitializeScoreSubject()
-        {
-            ScoreSubject.InjectDependencies(
-                Entities.Ball,
-                Services.SoundManager,
-                Services.ActiveEffectManager,
-                Services.PowerUpManager
-            );
+            Entities = new GameEntities(ball, leftPaddle, rightPaddle, wallTemplate);
+            Services = new GameServices(soundManager, powerUpManager, activeEffectManager);
+            ScoreSubject = new ScoreSubject(scoreboard, ball, soundManager, activeEffectManager, powerUpManager);
         }
     }
 }

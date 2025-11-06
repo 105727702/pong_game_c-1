@@ -20,7 +20,7 @@ namespace PongGame.Commands
 
         public void Undo()
         {
-            _paddle.Y = _previousY;
+            _paddle.SetY(_previousY);
         }
     }
 
@@ -42,7 +42,7 @@ namespace PongGame.Commands
 
         public void Undo()
         {
-            _paddle.Y = _previousY;
+            _paddle.SetY(_previousY);
         }
     }
 }

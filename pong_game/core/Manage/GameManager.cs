@@ -52,10 +52,24 @@ namespace PongGame.Core
             Paddle leftPaddle = _factory.CreatePaddle(30, 250, WINDOW_HEIGHT);
             Paddle rightPaddle = _factory.CreatePaddle(WINDOW_WIDTH - 50, 250, WINDOW_HEIGHT);
             Scoreboard scoreboard = _factory.CreateScoreboard();
+            Wall wallTemplate = _factory.CreateWall(0, 0, WINDOW_HEIGHT);
 
             _gameUI = new GameUI(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-            _Context = new GameContext(ball, leftPaddle, rightPaddle, scoreboard, WINDOW_WIDTH, WINDOW_HEIGHT);
+            var soundManager = new SoundManager();
+            var powerUpManager = new PowerUpManager(WINDOW_WIDTH, WINDOW_HEIGHT);
+            var activeEffectManager = new ActiveEffectManager(ball, leftPaddle, rightPaddle);
+
+            _Context = new GameContext(
+                ball, 
+                leftPaddle, 
+                rightPaddle, 
+                wallTemplate,
+                scoreboard, 
+                soundManager,
+                powerUpManager,
+                activeEffectManager);
+            
             _StateMachine = new StateMachine();
 
             _MenuState = new MenuState(_Context);
@@ -67,16 +81,7 @@ namespace PongGame.Core
             _StateMachine.AddState("GameOver", _GameOverState);
             _StateMachine.ChangeState("Menu");
 
-            var soundManager = new SoundManager();
-            var powerUpManager = new PowerUpManager(WINDOW_WIDTH, WINDOW_HEIGHT);
-            var activeEffectManager = new ActiveEffectManager(ball, leftPaddle, rightPaddle);
-
-            _Context.Services.SoundManager = soundManager;
-            _Context.Services.PowerUpManager = powerUpManager;
-            _Context.Services.ActiveEffectManager = activeEffectManager;
-
-            _Context.InitializeScoreSubject();
-            _Context.Entities.Walls = _Context.Wall.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT);
+            _Context.Entities.UpdateWalls(_Context.Entities.WallTemplate.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT));
 
             _gameUI.CurrentState = GameState.MainMenu;
         }
@@ -87,11 +92,11 @@ namespace PongGame.Core
             if (_Context == null) return;
 
             int totalScore = _Context.Scoreboard.LeftScore + _Context.Scoreboard.RightScore;
-            int newWallCount = _Context.Wall.CalculateWallCount(totalScore);
+            int newWallCount = _Context.Entities.WallTemplate.CalculateWallCount(totalScore);
             
             if (_Context.Entities.Walls.Count != newWallCount)
             {
-                _Context.Entities.Walls = _Context.Wall.CreateWalls(newWallCount, minDistance, _Context.WindowHeight);
+                _Context.Entities.UpdateWalls(_Context.Entities.WallTemplate.CreateWalls(newWallCount, minDistance, WINDOW_HEIGHT));
             }
         }
 
@@ -128,8 +133,7 @@ namespace PongGame.Core
                     {
                         _Context.ScoreSubject.Reset();
                         _Context.Entities.ResetPositions();
-                        _Context.Entities.Walls.Clear();
-                        _Context.Entities.Walls = _Context.Wall.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, _Context.WindowHeight);
+                        _Context.Entities.UpdateWalls(_Context.Entities.WallTemplate.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT));
                         
                         ChangeState("Play");
                         _gameUI.CurrentState = GameState.Playing;
@@ -143,31 +147,24 @@ namespace PongGame.Core
                 {
                     if (_gameUI.CurrentState == GameState.MainMenu)
                     {
-                        float ballSpeed = GetBallSpeedFromDifficulty();
+                        float ballSpeed = _gameUI.SelectedDifficulty switch
+                        {
+                            Difficulty.Easy => 4f,
+                            Difficulty.Medium => 5f,
+                            Difficulty.Hard => 6f,
+                            _ => 5f
+                        };                        
                         _Context.Entities.Ball.SetBaseSpeed(ballSpeed);
                         _Context.ScoreSubject.Reset();
                         _Context.Entities.ResetPositions();
-                        _Context.Entities.Walls.Clear();
-                        _Context.Entities.Walls = _Context.Wall.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, _Context.WindowHeight);
-                        
+                        _Context.Entities.UpdateWalls(_Context.Entities.WallTemplate.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT));
+
                         ChangeState("Play");
                         _gameUI.CurrentState = GameState.Playing;
                     }
+
                 }
             }
-        }
-
-        private float GetBallSpeedFromDifficulty()
-        {
-            if (_gameUI == null) return 5f;
-
-            return _gameUI.SelectedDifficulty switch
-            {
-                Difficulty.Easy => 4f,
-                Difficulty.Medium => 5f,
-                Difficulty.Hard => 6f,
-                _ => 5f
-            };
         }
 
         public void Render()

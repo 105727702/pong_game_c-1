@@ -17,7 +17,7 @@ namespace PongGame.Components
         protected RenderComponent? _render;
         protected MovementComponent? _movement;
 
-        public virtual float X 
+        public float X 
         { 
             get => _transform?.X ?? 0;
             set 
@@ -27,7 +27,7 @@ namespace PongGame.Components
             }
         }
         
-        public virtual float Y 
+        public float Y 
         { 
             get => _transform?.Y ?? 0;
             set 
@@ -37,7 +37,7 @@ namespace PongGame.Components
             }
         }
 
-        public virtual float Width
+        public float Width
         {
             get => _transform?.Width ?? 0;
             set
@@ -47,7 +47,7 @@ namespace PongGame.Components
             }
         }
 
-        public virtual float Height
+        public float Height
         {
             get => _transform?.Height ?? 0;
             set
@@ -57,7 +57,7 @@ namespace PongGame.Components
             }
         }
         
-        public virtual Color Color 
+        public Color Color 
         { 
             get => _render?.Color ?? Color.White;
             set 
@@ -67,7 +67,7 @@ namespace PongGame.Components
             }
         }
 
-        public virtual Vector2D Velocity
+        public Vector2D Velocity
         {
             get => _movement?.Velocity ?? new Vector2D(0, 0);
             set
@@ -77,7 +77,7 @@ namespace PongGame.Components
             }
         }
 
-        public virtual float Speed
+        public float Speed
         {
             get => _movement?.Speed ?? 0;
             set

@@ -4,9 +4,9 @@ namespace PongGame.Combine
 {
     public class GameServices
     {
-        public SoundManager? SoundManager { get; set; }
-        public PowerUpManager? PowerUpManager { get; set; }
-        public ActiveEffectManager? ActiveEffectManager { get; set; }
+        public SoundManager? SoundManager { get; private set; }
+        public PowerUpManager? PowerUpManager { get; private set; }
+        public ActiveEffectManager? ActiveEffectManager { get; private set; }
         public CollisionHandler? CollisionHandler { get; set; }
         public InputHandler? InputHandler { get; set; }
 
