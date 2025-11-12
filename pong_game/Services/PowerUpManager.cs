@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using PongGame.Entities;
-using PongGame.Decorator;
+using PongGame.Strategy;
 
 namespace PongGame.Services
 {

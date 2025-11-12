@@ -32,9 +32,10 @@ namespace PongGame.UI
             CurrentState = GameState.MainMenu;
             SelectedDifficulty = Difficulty.Medium;
             
-            _titleFont = SplashKit.FontNamed("default");
-            _buttonFont = SplashKit.FontNamed("default");
-            _scoreFont = SplashKit.FontNamed("default");
+            SplashKit.LoadFont("game_font", "./assets/ARIAL.TTF");
+            _titleFont = SplashKit.FontNamed("game_font");
+            _buttonFont = SplashKit.FontNamed("game_font");
+            _scoreFont = SplashKit.FontNamed("game_font");
 
             InitializeButtonRects();
         }
@@ -81,22 +82,21 @@ namespace PongGame.UI
 
         private void DrawMainMenu()
         {   
-            SplashKit.LoadFont("game_font", "./assets/ARIAL.TTF");
-            SplashKit.DrawText("PONG", Color.White, "game_font", 72,
-                (double)(_trueCenterX - 100), 100.0);
+            string titleText = "PONG";
+            int titleSize = 72;
+            double titleWidth = SplashKit.TextWidth(titleText, _titleFont, titleSize);
+            SplashKit.DrawText(titleText, Color.White, _titleFont, titleSize,
+                _trueCenterX - titleWidth / 2, 100.0);
 
-            // Start button
             SplashKit.FillRectangle(Color.Gray, _startButtonRect);
             SplashKit.DrawRectangle(Color.White, _startButtonRect);
             DrawCenteredText("START", _buttonFont, Color.White, _startButtonRect, 42);
 
-            // Difficulty button
             SplashKit.FillRectangle(Color.Gray, _difficultyButtonRect);
             SplashKit.DrawRectangle(Color.White, _difficultyButtonRect);
             DrawCenteredText($"DIFFICULTY: {SelectedDifficulty.ToString().ToUpper()}", 
-                _buttonFont, Color.White, _difficultyButtonRect, 42);
+                _buttonFont, Color.White, _difficultyButtonRect, 22);
 
-            // Exit button
             SplashKit.FillRectangle(Color.Gray, _exitButtonRect);
             SplashKit.DrawRectangle(Color.White, _exitButtonRect);
             DrawCenteredText("EXIT", _buttonFont, Color.White, _exitButtonRect, 42);
@@ -105,8 +105,10 @@ namespace PongGame.UI
         private void DrawDifficultyMenu()
         {
             string title = "SELECT DIFFICULTY";
-            SplashKit.DrawText(title, Color.White, "default", 64,
-                (double)(_trueCenterX - 200), 100.0);
+            int titleSize = 64;
+            double titleWidth = SplashKit.TextWidth(title, _titleFont, titleSize);
+            SplashKit.DrawText(title, Color.White, _titleFont, titleSize,
+                _trueCenterX - titleWidth / 2, 100.0);
 
             string[] difficultyNames = { "EASY", "MEDIUM", "HARD" };
             
@@ -125,12 +127,15 @@ namespace PongGame.UI
             string rightScore = scoreboard.RightScore.ToString();
             
             int centerX = _windowWidth / 2;
+            int scoreSize = 64;
             
-            SplashKit.DrawText(leftScore, Color.White, "default", 64,
-                (double)((centerX / 2) - 30), 30.0);
+            double leftScoreWidth = SplashKit.TextWidth(leftScore, _scoreFont, scoreSize);
+            SplashKit.DrawText(leftScore, Color.White, _scoreFont, scoreSize,
+                (centerX / 2) - (leftScoreWidth / 2), 30.0);
             
-            SplashKit.DrawText(rightScore, Color.White, "default", 64,
-                (double)(centerX + (centerX / 2) - 30), 30.0);
+            double rightScoreWidth = SplashKit.TextWidth(rightScore, _scoreFont, scoreSize);
+            SplashKit.DrawText(rightScore, Color.White, _scoreFont, scoreSize,
+                centerX + (centerX / 2) - (rightScoreWidth / 2), 30.0);
             
             for (int y = 0; y <= _windowHeight; y += 20)
             {
@@ -146,12 +151,16 @@ namespace PongGame.UI
             SplashKit.FillRectangle(Color.RGBAColor(0, 0, 0, 128), 0, 0, _windowWidth, _windowHeight);
 
             string winnerText = Winner == 1 ? "LEFT PLAYER WINS!" : "RIGHT PLAYER WINS!";
-            SplashKit.DrawText(winnerText, Color.White, "default", 48,
-                (double)(_trueCenterX - 180), 150.0);
+            int winnerSize = 48;
+            double winnerWidth = SplashKit.TextWidth(winnerText, _titleFont, winnerSize);
+            SplashKit.DrawText(winnerText, Color.White, _titleFont, winnerSize,
+                _trueCenterX - winnerWidth / 2, 150.0);
 
             string finalScore = $"Final Score: {scoreboard.LeftScore} - {scoreboard.RightScore}";
-            SplashKit.DrawText(finalScore, Color.White, "default", 32,
-                (double)(_trueCenterX - 140), 220.0);
+            int scoreSize = 32;
+            double scoreWidth = SplashKit.TextWidth(finalScore, _scoreFont, scoreSize);
+            SplashKit.DrawText(finalScore, Color.White, _scoreFont, scoreSize,
+                _trueCenterX - scoreWidth / 2, 220.0);
 
             SplashKit.FillRectangle(Color.Gray, _playAgainButtonRect);
             SplashKit.DrawRectangle(Color.White, _playAgainButtonRect);
@@ -164,10 +173,11 @@ namespace PongGame.UI
 
         private void DrawCenteredText(string text, Font font, Color color, Rectangle rect, int fontSize = 18)
         {
-            double textWidth = text.Length * fontSize * 0.6;
+            double textWidth = SplashKit.TextWidth(text, font, fontSize);
+            double textHeight = SplashKit.TextHeight(text, font, fontSize);
             double x = rect.X + (rect.Width / 2) - (textWidth / 2);
-            double y = rect.Y + (rect.Height / 2) - (fontSize / 2);
-            SplashKit.DrawText(text, color, "default", fontSize, x, y);
+            double y = rect.Y + (rect.Height / 2) - (textHeight / 2);
+            SplashKit.DrawText(text, color, font, fontSize, x, y);
         }
 
         public bool HandleMouseClick(float mouseX, float mouseY)

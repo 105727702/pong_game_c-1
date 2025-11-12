@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using PongGame.Entities;
 using SplashKitSDK;
 
-namespace PongGame.Decorator
+namespace PongGame.Strategy
 {
     public class EffectFactory
     {

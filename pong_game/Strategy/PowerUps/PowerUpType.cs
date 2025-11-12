@@ -1,4 +1,4 @@
-namespace PongGame.Decorator
+namespace PongGame.Strategy
 {
     public enum PowerUpType
     {

@@ -12,10 +12,10 @@ namespace PongGame.Components
 
     public abstract class GameObjectComponent
     {
-        protected List<IComponent> _components = new List<IComponent>();
-        protected TransformComponent? _transform;
-        protected RenderComponent? _render;
-        protected MovementComponent? _movement;
+        public List<IComponent> _components = new List<IComponent>();
+        public TransformComponent? _transform;
+        public RenderComponent? _render;
+        public MovementComponent? _movement;
 
         public float X 
         { 

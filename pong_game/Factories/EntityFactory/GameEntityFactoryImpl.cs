@@ -7,8 +7,6 @@ namespace PongGame.Factories
 {
     public class GameEntityFactory 
     {
-        private readonly Random _random = new Random();
-        
         public Ball CreateBall(int windowWidth, int windowHeight)
         {
             return new Ball(windowWidth, windowHeight);

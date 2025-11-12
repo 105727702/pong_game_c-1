@@ -2,7 +2,7 @@ using System;
 using PongGame.Entities;
 using SplashKitSDK;
 
-namespace PongGame.Decorator
+namespace PongGame.Strategy
 {
     public class SpeedBoostEffect : IEffect
     {

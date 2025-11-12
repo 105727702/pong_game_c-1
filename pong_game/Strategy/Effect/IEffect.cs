@@ -1,6 +1,6 @@
 using PongGame.Entities;
 
-namespace PongGame.Decorator
+namespace PongGame.Strategy
 {
     public interface IEffect
     {

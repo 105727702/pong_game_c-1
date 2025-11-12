@@ -2,7 +2,7 @@ using PongGame.Entities;
 using SplashKitSDK;
 using System;
 
-namespace PongGame.Decorator
+namespace PongGame.Strategy
 {
     public class PowerUp
     {

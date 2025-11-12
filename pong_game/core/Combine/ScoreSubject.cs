@@ -13,7 +13,7 @@ namespace PongGame.Combine
         private readonly ActiveEffectManager? _activeEffectManager;
         private readonly PowerUpManager? _powerUpManager;
         
-        private const int WINNING_SCORE = 1;
+        private const int WINNING_SCORE = 10;
 
         public int LeftScore => _scoreboard.LeftScore;
         public int RightScore => _scoreboard.RightScore;

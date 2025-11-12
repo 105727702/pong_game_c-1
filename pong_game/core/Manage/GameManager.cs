@@ -13,7 +13,6 @@ namespace PongGame.Core
         private const int WINDOW_HEIGHT = 800;
         private const int NUM_WALLS = 4;
         private const int MIN_WALL_DISTANCE = 60;
-        private static readonly object _lock = new object();
         private static GameManager? _instance;
         private GameContext? _Context;
         private StateMachine? _StateMachine;
@@ -34,13 +33,7 @@ namespace PongGame.Core
             {
                 if (_instance == null)
                 {
-                    lock (_lock)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new GameManager();
-                        }
-                    }
+                    _instance = new GameManager();
                 }
                 return _instance;
             }

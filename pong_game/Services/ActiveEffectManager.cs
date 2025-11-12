@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PongGame.Entities;
 using SplashKitSDK;
-using PongGame.Decorator;
+using PongGame.Strategy;
 
 namespace PongGame.Services
 {
