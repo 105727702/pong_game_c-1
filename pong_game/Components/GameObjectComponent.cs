@@ -12,14 +12,19 @@ namespace PongGame.Components
 
     public abstract class GameObjectComponent
     {
-        public List<IComponent> _components = new List<IComponent>();
-        public TransformComponent? _transform;
-        public RenderComponent? _render;
-        public MovementComponent? _movement;
+        private List<IComponent> _components = new List<IComponent>();
+        private TransformComponent? _transform;
+        private RenderComponent? _render;
+        private MovementComponent? _movement;
 
         public float X 
         { 
-            get => _transform?.X ?? 0;
+            get 
+            {
+                if (_transform != null)
+                    return _transform.X;
+                return 0;
+            }
             set 
             { 
                 if (_transform != null) 
@@ -29,7 +34,12 @@ namespace PongGame.Components
         
         public float Y 
         { 
-            get => _transform?.Y ?? 0;
+            get 
+            {
+                if (_transform != null)
+                    return _transform.Y;
+                return 0;
+            }
             set 
             { 
                 if (_transform != null) 
@@ -39,7 +49,12 @@ namespace PongGame.Components
 
         public float Width
         {
-            get => _transform?.Width ?? 0;
+            get 
+            {
+                if (_transform != null)
+                    return _transform.Width;
+                return 0;
+            }
             set
             {
                 if (_transform != null)
@@ -49,7 +64,12 @@ namespace PongGame.Components
 
         public float Height
         {
-            get => _transform?.Height ?? 0;
+            get 
+            {
+                if (_transform != null)
+                    return _transform.Height;
+                return 0;
+            }
             set
             {
                 if (_transform != null)
@@ -59,7 +79,13 @@ namespace PongGame.Components
         
         public Color Color 
         { 
-            get => _render?.Color ?? Color.White;
+            get
+            {
+                if (_render != null)
+                    return _render.Color;
+
+                return Color.White;
+            }
             set 
             { 
                 if (_render != null) 
@@ -69,7 +95,13 @@ namespace PongGame.Components
 
         public Vector2D Velocity
         {
-            get => _movement?.Velocity ?? new Vector2D(0, 0);
+            get
+            {
+                if (_movement != null)
+                    return _movement.Velocity;
+
+                return new Vector2D(0, 0);
+            }
             set
             {
                 if (_movement != null)
@@ -79,7 +111,12 @@ namespace PongGame.Components
 
         public float Speed
         {
-            get => _movement?.Speed ?? 0;
+            get
+            {
+                if (_movement != null)
+                    return _movement.Speed;
+                return 0;
+            }
             set
             {
                 if (_movement != null)

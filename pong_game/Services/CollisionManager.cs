@@ -7,7 +7,7 @@ namespace PongGame.Services
 {
     public class CollisionHandler
     {
-        private readonly System.Random _random = new();
+        private readonly Random _random = new();
         private readonly SoundManager? _soundManager;
         private readonly PowerUpManager? _powerUpManager;
 

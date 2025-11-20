@@ -22,8 +22,7 @@ namespace PongGame.Entities
             get => Velocity.Y;
             set 
             {
-                if (_movement != null)
-                    _movement.SetVelocity(0, value);
+                Velocity = new Vector2D(0, value);
             }
         }
 
@@ -101,12 +100,12 @@ namespace PongGame.Entities
 
         public Rectangle CreateRectangle()
         {
-            return _transform?.CreateRectangle() ?? new Rectangle();
+            return SplashKit.RectangleFrom(X, Y, Width, Height);
         }
 
         public override void Draw()
         {
-            _render?.Update(0);
+            base.Update(0);
         }
     }
 }

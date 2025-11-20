@@ -85,12 +85,12 @@ namespace PongGame.Entities
 
         public Rectangle CreateRectangle() 
         {
-            return _transform?.CreateRectangle() ?? new Rectangle(); 
+            return SplashKit.RectangleFrom(X, Y, Width, Height);
         }
 
         public override void Draw()
         {
-            _render?.Update(0);
+            base.Update(0);
         }
     }
 }
