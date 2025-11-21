@@ -43,7 +43,6 @@ namespace PongGame.Services
 
             foreach (var type in expiredEffects)
             {
-                DeactivateEffect(type);
                 _activeEffects.Remove(type);
             }
         }
@@ -56,16 +55,6 @@ namespace PongGame.Services
         private void ActivateEffect(PowerUpType type)
         {
             _effectFactory.ApplyEffect(type, _ball, _leftPaddle, _rightPaddle);
-        }
-
-        private void DeactivateEffect(PowerUpType type)
-        {
-            bool shouldReset = true;
-
-            if (shouldReset)
-            {
-                _effectFactory.RemoveEffect(type, _ball, _leftPaddle, _rightPaddle, _originalPaddleHeight, _originalBallSpeed);
-            }
         }
 
         public void ClearAllEffects()

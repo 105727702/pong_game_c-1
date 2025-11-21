@@ -19,11 +19,6 @@ namespace PongGame.Components
             Height = height;
         }
 
-        public Rectangle CreateRectangle()
-        {
-            return SplashKit.RectangleFrom(X, Y, Width, Height);
-        }
-
         public void Update(float deltaTime)
         {
         }
@@ -46,11 +41,6 @@ namespace PongGame.Components
         {
             _transform.X += Velocity.X;
             _transform.Y += Velocity.Y;
-        }
-
-        public void SetVelocity(float x, float y)
-        {
-            Velocity = new Vector2D(x, y);
         }
     }
 

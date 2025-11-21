@@ -17,7 +17,7 @@ namespace PongGame.Entities
         public new float Speed 
         { 
             get => _speed;
-            private set => _speed = Math.Clamp(value, MIN_SPEED, MAX_SPEED);
+            set => _speed = Math.Clamp(value, MIN_SPEED, MAX_SPEED);
         }
         public float StartX { get; private set; }
         public float StartY { get; private set; }

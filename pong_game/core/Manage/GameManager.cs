@@ -74,7 +74,7 @@ namespace PongGame.Core
             _StateMachine.AddState("GameOver", _GameOverState);
             _StateMachine.ChangeState("Menu");
 
-            _Context.Entities.UpdateWalls(_Context.Entities.WallTemplate.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT));
+            _Context.UpdateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT);
 
             _gameUI.CurrentState = GameState.MainMenu;
         }
@@ -84,12 +84,11 @@ namespace PongGame.Core
         {
             if (_Context == null) return;
 
-            int totalScore = _Context.Scoreboard.LeftScore + _Context.Scoreboard.RightScore;
-            int newWallCount = _Context.Entities.WallTemplate.CalculateWallCount(totalScore);
+            int newWallCount = _Context.CalculateWallCount();
             
-            if (_Context.Entities.Walls.Count != newWallCount)
+            if (_Context.GetWallCount() != newWallCount)
             {
-                _Context.Entities.UpdateWalls(_Context.Entities.WallTemplate.CreateWalls(newWallCount, minDistance, WINDOW_HEIGHT));
+                _Context.UpdateWalls(newWallCount, minDistance, WINDOW_HEIGHT);
             }
         }
 
@@ -103,8 +102,6 @@ namespace PongGame.Core
             bool isGameOver = _StateMachine?.GetCurrentState() == _GameOverState;
             if (isGameOver && _gameUI != null && _gameUI.CurrentState != GameState.GameOver)
             {
-                int winner = _Context!.Scoreboard.LeftScore >= 1 ? 1 : 2;
-                _gameUI.Winner = winner;
                 _gameUI.CurrentState = GameState.GameOver;
             }
         }
@@ -124,9 +121,8 @@ namespace PongGame.Core
                     
                     if (clickedPlayAgain)
                     {
-                        _Context.ScoreSubject.Reset();
-                        _Context.Entities.ResetPositions();
-                        _Context.Entities.UpdateWalls(_Context.Entities.WallTemplate.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT));
+                        _Context.ResetGame();
+                        _Context.UpdateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT);
                         
                         ChangeState("Play");
                         _gameUI.CurrentState = GameState.Playing;
@@ -147,10 +143,9 @@ namespace PongGame.Core
                             Difficulty.Hard => 6f,
                             _ => 5f
                         };                        
-                        _Context.Entities.Ball.SetBaseSpeed(ballSpeed);
-                        _Context.ScoreSubject.Reset();
-                        _Context.Entities.ResetPositions();
-                        _Context.Entities.UpdateWalls(_Context.Entities.WallTemplate.CreateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT));
+                        _Context.SetBallSpeed(ballSpeed);
+                        _Context.ResetGame();
+                        _Context.UpdateWalls(NUM_WALLS, MIN_WALL_DISTANCE, WINDOW_HEIGHT);
 
                         ChangeState("Play");
                         _gameUI.CurrentState = GameState.Playing;
@@ -169,21 +164,8 @@ namespace PongGame.Core
             bool isPlaying = _StateMachine?.GetCurrentState() == _PlayState;
             if (isPlaying && _gameUI.CurrentState == GameState.Playing)
             {
-                if (_Context == null) return;
-
-                _Context.Entities.Ball.Draw();
-                _Context.Entities.LeftPaddle.Draw();
-                _Context.Entities.RightPaddle.Draw();
-
-                foreach (Wall wall in _Context.Entities.Walls)
-                {
-                    wall.Draw();
-                }
-
-                if (_Context.PowerUpManager != null)
-                {
-                    _Context.PowerUpManager.Draw();
-                }
+                _Context.DrawAllEntities();
+                _Context.DrawPowerUps();
             }
         }
 

@@ -35,12 +35,6 @@ namespace PongGame.Strategy
             effect.Apply(ball, leftPaddle, rightPaddle);
         }
 
-        public void RemoveEffect(PowerUpType type, Ball ball, Paddle leftPaddle, Paddle rightPaddle, int originalPaddleHeight, float originalBallSpeed)
-        {
-            var effect = GetEffect(type);
-            effect.Remove(ball, leftPaddle, rightPaddle, originalPaddleHeight);
-        }
-
         public void ResetAllEffects(Ball ball, Paddle leftPaddle, Paddle rightPaddle, int originalPaddleHeight)
         {
             ball.ResetSpeed();

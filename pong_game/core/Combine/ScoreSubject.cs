@@ -12,6 +12,7 @@ namespace PongGame.Combine
         private readonly SoundManager? _soundManager;
         private readonly ActiveEffectManager? _activeEffectManager;
         private readonly PowerUpManager? _powerUpManager;
+        private readonly GameEntities? _entities;
         
         private const int WINNING_SCORE = 10;
 
@@ -24,13 +25,15 @@ namespace PongGame.Combine
             Ball ball, 
             SoundManager? soundManager = null, 
             ActiveEffectManager? activeEffectManager = null, 
-            PowerUpManager? powerUpManager = null)
+            PowerUpManager? powerUpManager = null,
+            GameEntities? entities = null)
         {
             _scoreboard = scoreboard;
             _ball = ball;
             _soundManager = soundManager;
             _activeEffectManager = activeEffectManager;
             _powerUpManager = powerUpManager;
+            _entities = entities;
         }
 
         public void LeftPoint()
@@ -59,7 +62,7 @@ namespace PongGame.Combine
             {
                 _soundManager?.PlayEffect(SoundType.BallOut);
                 RightPoint();
-                _ball.ResetPosition();
+                _entities?.ResetPositions();
                 _activeEffectManager?.ClearAllEffects();
                 _powerUpManager?.Clear();
 
@@ -73,7 +76,7 @@ namespace PongGame.Combine
             {
                 _soundManager?.PlayEffect(SoundType.BallOut);
                 LeftPoint();
-                _ball.ResetPosition();
+                _entities?.ResetPositions();
                 _activeEffectManager?.ClearAllEffects();
                 _powerUpManager?.Clear();
 

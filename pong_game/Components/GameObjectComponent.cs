@@ -136,28 +136,6 @@ namespace PongGame.Components
                 _movement = movement;
         }
 
-        public void RemoveComponent(IComponent component)
-        {
-            _components.Remove(component);
-            
-            if (component is TransformComponent)
-                _transform = null;
-            else if (component is RenderComponent)
-                _render = null;
-            else if (component is MovementComponent)
-                _movement = null;
-        }
-
-        public T? GetComponent<T>() where T : class, IComponent
-        {
-            foreach (var component in _components)
-            {
-                if (component is T typedComponent)
-                    return typedComponent;
-            }
-            return null;
-        }
-
         public virtual void Update(float deltaTime)
         {
             foreach (var component in _components)
